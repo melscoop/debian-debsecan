@@ -300,11 +300,13 @@ def fetch_data(options):
 # Classes for output formatting
 
 class Formatter:
+    def __init__(self, options):
+        pass
     def finish(self):
         pass
 
 class BugFormatter(Formatter):
-    def __init__(self):
+    def __init__(self, options):
         self.bugs = {}
     def record(self, v, bp, sp):
         self.bugs[v.bug] = 1
@@ -315,7 +317,7 @@ class BugFormatter(Formatter):
             print b
 
 class PackageFormatter(Formatter):
-    def __init__(self):
+    def __init__(self, options):
         self.packages = {}
     def record(self, v, (bin_name, bin_version), sp):
         self.packages[bin_name] = 1
@@ -389,7 +391,7 @@ def rate_system(options, vulns):
     packages = PackageFile(options.status)
     re_source = re.compile\
                 (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
-    formatter = formatters[options.format]()
+    formatter = formatters[options.format](options)
     for pkg in packages:
         pkg_name = None
         pkg_status = None
