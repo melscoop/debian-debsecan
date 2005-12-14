@@ -218,11 +218,16 @@ def parse_cli():
         sys.exit(1)
     return options
 
+# Vulnerabilities
+
 class Vulnerability:
+    """Stores a vulnerability name/package name combination."""
+
     urgency_conversion = {' ' : '',
                         'L' : 'low',
                         'M' : 'medium',
                         'H' : 'high'}
+
     def __init__(self, str):
         """Creates a new vulnerability object from a string."""
         (bug, flags, package, version, description) = str.split(',', 4)
@@ -291,6 +296,8 @@ def fetch_data(options):
         except KeyError:
             packages[v.package] = [v]
     return packages
+
+# Classes for output formatting
 
 class Formatter:
     def finish(self):
@@ -374,6 +381,11 @@ formatters = {'bugs' : BugFormatter,
               'detail' : DetailFormatter}
 
 def rate_system(options, vulns):
+    """Read /var/lib/dpkg/status and discover vulnerable packages.
+    The results are printed using one of the formatter classes.
+
+    options: command line options
+    vulns: list of vulnerabiltiies"""
     packages = PackageFile(options.status)
     re_source = re.compile\
                 (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
