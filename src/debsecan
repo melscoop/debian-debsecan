@@ -207,7 +207,7 @@ def parse_cli():
                       default="/var/lib/dpkg/status",
                       help="name of the dpkg status file")
     parser.add_option("--format", type="choice",
-                      choices=['bugs', 'packages', 'summary'],
+                      choices=['bugs', 'packages', 'summary', 'detail'],
                       default="summary",
                       help="change output format")
     parser.add_option("--only-fixed", action="store_true", dest="only_fixed",
@@ -334,9 +334,44 @@ class SummaryFormatter(Formatter):
         else:
             print "%s %s" % (v.bug, bin_name)
 
+class DetailFormatter(Formatter):
+    def record(self, v,
+               (bin_name, bin_version), (src_name, src_version)):
+        notes = []
+        if v.fix_available:
+            notes.append("fixed")
+        if v.remote:
+            notes.append("remotely exploitable")
+        if v.urgency:
+            notes.append(v.urgency + " urgency")
+        notes = ', '.join(notes)
+        if notes:
+            print "%s (%s)" % (v.bug, notes)
+        else:
+            print v.bug
+        print "  " + v.description
+        print "  installed: %s %s" \
+              % (bin_name, bin_version)
+        print "             (built from %s %s)" \
+              % (src_name, src_version)
+        if v.binary_package:
+            k = 'binary'
+        else:
+            k = 'source'
+        if v.fix_available:
+            print "  fixed package: %s %s (%s package)" \
+                  % (v.package, v.version, k)
+        elif v.version:
+            print "  fixed package: %s %s (%s package, not backported)" \
+                  % (v.package, v.version, k)
+        else:
+            print "  fixed package: not yet available"
+        print
+
 formatters = {'bugs' : BugFormatter,
               'packages' : PackageFormatter,
-              'summary' : SummaryFormatter}
+              'summary' : SummaryFormatter,
+              'detail' : DetailFormatter}
 
 def rate_system(options, vulns):
     packages = PackageFile(options.status)
