@@ -199,7 +199,7 @@ def parse_cli():
     """Reads sys.argv and returns an options object."""
     parser = OptionParser(usage="%prog OPTIONS... --suite SUITE")
     parser.add_option("--suite", type="choice",
-                      choices=['sarge', 'etch', 'sid'],
+                      choices=['woody', 'sarge', 'etch', 'sid'],
                       help="set the Debian suite of this installation")
     parser.add_option("--source", metavar="URL",
                       help="sets the URL for the vulnerability information")
