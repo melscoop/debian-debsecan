@@ -16,12 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-######################################################################
-# From debian_support in the secure-testing repository.  Needs to be
-# kept in sync manually.  (We duplicate here to avoid a library
-# dependency, and make it easy to run the script even when it is not
-# installed on the system.)
-
 from cStringIO import StringIO
 from optparse import OptionParser
 import re
@@ -29,6 +23,12 @@ import sys
 import types
 import urllib
 import zlib
+
+######################################################################
+# From debian_support in the secure-testing repository.  Needs to be
+# kept in sync manually.  (We duplicate here to avoid a library
+# dependency, and make it easy to run the script even when it is not
+# installed on the system.)
 
 class ParseError(Exception):
     """An exception which is used to signal a parse failure.
