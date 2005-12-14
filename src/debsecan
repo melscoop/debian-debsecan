@@ -206,6 +206,10 @@ def parse_cli():
     parser.add_option("--status", metavar="NAME",
                       default="/var/lib/dpkg/status",
                       help="name of the dpkg status file")
+    parser.add_option("--format", type="choice",
+                      choices=['bugs', 'packages', 'summary'],
+                      default="summary",
+                      help="change output format")
     (options, args) = parser.parse_args()
     if options.suite is None:
         sys.stderr.write("error: the --suite option is required\n")
@@ -277,10 +281,53 @@ def fetch_data(options):
             packages[v.package] = [v]
     return packages
 
+class Formatter:
+    def finish(self):
+        pass
+
+class BugFormatter(Formatter):
+    def __init__(self):
+        self.bugs = {}
+    def record(self, v, bp, sp):
+        self.bugs[v.bug] = 1
+    def finish(self):
+        bugs = self.bugs.keys()
+        bugs.sort()
+        for b in bugs:
+            print b
+
+class PackageFormatter(Formatter):
+    def __init__(self):
+        self.packages = {}
+    def record(self, v, (bin_name, bin_version), sp):
+        self.packages[bin_name] = 1
+    def finish(self):
+        packages = self.packages.keys()
+        packages.sort()
+        for p in packages:
+            print p
+
+class SummaryFormatter(Formatter):
+    def record(self, v,
+               (bin_name, bin_version), (src_name, src_version)):
+        if v.version:
+            if v.binary_package:
+                ver = bin_version
+            else:
+                ver = src_version
+            print v.bug, bin_name, "(%s, need %s)" % (ver, v.version)
+        else:
+            print v.bug, bin_name
+
+formatters = {'bugs' : BugFormatter,
+              'packages' : PackageFormatter,
+              'summary' : SummaryFormatter}
+
 def rate_system(options, vulns):
     packages = PackageFile(options.status)
     re_source = re.compile\
                 (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
+    formatter = formatters[options.format]()
     for pkg in packages:
         pkg_name = None
         pkg_status = None
@@ -326,16 +373,11 @@ def rate_system(options, vulns):
         except KeyError:
             continue
         for v in vlist:
-            if v.is_vulnerable ((pkg_name, pkg_version),
-                                (pkg_source, pkg_source_version)):
-                if v.version:
-                    if v.binary_package:
-                        ver = pkg_version
-                    else:
-                        ver = pkg_source_version
-                    print v.bug, pkg_name, "(%s, need %s)" % (ver, v.version)
-                else:
-                    print v.bug, pkg_name
+            bp = (pkg_name, pkg_version)
+            sp = (pkg_source, pkg_source_version)
+            if v.is_vulnerable (bp, sp):
+                formatter.record(v, bp, sp)
+    formatter.finish()
 
 options = parse_cli()
 rate_system(options, fetch_data(options))
