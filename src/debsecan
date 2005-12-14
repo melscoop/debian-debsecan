@@ -283,6 +283,7 @@ def rate_system(options, vulns):
                 (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
     for pkg in packages:
         pkg_name = None
+        pkg_status = None
         pkg_version = None
         pkg_arch = None
         pkg_source = None
@@ -291,6 +292,8 @@ def rate_system(options, vulns):
         for (name, contents) in pkg:
             if name == "Package":
                 pkg_name = contents
+            if name == "Status":
+                pkg_status = contents
             elif name == "Version":
                 pkg_version = Version(contents)
             elif name == "Source":
@@ -303,9 +306,15 @@ def rate_system(options, vulns):
         if pkg_name is None:
             raise SyntaxError\
                   ("package record does not contain package name")
-        if pkg_version is None:
+        if pkg_status is None:
+            raise SyntaxError\
+                  ("package record does not contain status")
+        if 'installed' not in pkg_status.split(' '):
             # Package is not installed.
             continue
+        if pkg_version is None:
+            raise SyntaxError\
+                  ("package record does not contain version information")
         if not pkg_source:
             pkg_source = pkg_name
         if pkg_source_version:
