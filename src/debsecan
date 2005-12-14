@@ -205,7 +205,7 @@ def parse_cli():
                       help="sets the URL for the vulnerability information")
     parser.add_option("--status", metavar="NAME",
                       default="/var/lib/dpkg/status",
-                      help="name of the dpkg status file [default: %default]")
+                      help="name of the dpkg status file")
     (options, args) = parser.parse_args()
     if options.suite is None:
         sys.stderr.write("error: the --suite option is required\n")
