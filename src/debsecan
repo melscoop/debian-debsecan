@@ -1,0 +1,332 @@
+#!/usr/bin/python
+# debsecan - Debian Security Analyzer
+# Copyright (C) 2005 Florian Weimer
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+######################################################################
+# From debian_support in the secure-testing repository.  Needs to be
+# kept in sync manually.  (We duplicate here to avoid a library
+# dependency, and make it easy to run the script even when it is not
+# installed on the system.)
+
+from cStringIO import StringIO
+from optparse import OptionParser
+import re
+import sys
+import types
+import urllib
+import zlib
+
+class ParseError(Exception):
+    """An exception which is used to signal a parse failure.
+
+    Attributes:
+
+    filename - name of the file
+    lineno - line number in the file
+    msg - error message
+
+    """
+    
+    def __init__(self, filename, lineno, msg):
+        assert type(lineno) == types.IntType
+        self.filename = filename
+        self.lineno = lineno
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
+    def __repr__(self):
+        return "ParseError(%s, %d, %s)" % (`self.filename`,
+                                           self.lineno,
+                                           `self.msg`)
+
+    def printOut(self, file):
+        """Writes a machine-parsable error message to file."""
+        file.write("%s:%d: %s\n" % (self.filename, self.lineno, self.msg))
+        file.flush()
+
+letterValue = [None] * 256
+def initLetterValue():
+    c = 0
+    for x in range(ord('A'), ord('Z') + 1):
+        letterValue[x] = chr(c)
+        c += 1
+    for x in range(ord('a'), ord('z') + 1):
+        letterValue[x] = chr(c)
+        c += 1
+    for x in "+-.:":
+        letterValue[ord(x)] = chr(c)
+        c += 1
+initLetterValue()
+del initLetterValue
+
+class Version:
+    """This class implements Debian version numbers."""
+
+    def __init__(self, version):
+        """Creates a new Version object."""
+        assert type(version) == types.StringType, `version`
+        assert version <> ""
+        self.__asString = version
+        self.__parsed = self.__parse(version)
+
+    def __str__(self):
+        return self.__asString
+
+    def __repr__(self):
+        return 'Version(%s)' % `self.__asString`
+
+    def __cmp__(self, other):
+        """Compares two versions.
+
+        This method implements the algorithm in the Debian Policy."""
+        return cmp(self.__parsed, other.__parsed)
+
+    def __parse(self, v, regexp=\
+                re.compile(r'^(?:(\d+):)?([A-Za-z0-9.+:-]+?)'
+                           + r'(?:-([A-Za-z0-9.+]+))?$')):
+        match = regexp.match(v)
+        if match is None:
+            raise ValueError, "invalid Debian version string"
+        (epoch, upstream, debian) = match.groups()
+        if epoch is None:
+            epoch = 0
+        else:
+            epoch = int(epoch)
+        return (epoch, self.__parse_1(upstream), self.__parse_1(debian))
+
+    def __parse_1(self, x, non_digits=re.compile(r'^([^0-9]*)(.*)$'),
+                  digits=re.compile(r'^([0-9]*)(.*)$')):
+        l = []
+        while x is not None and x <> '':
+            (nd, x) = non_digits.match(x).groups()
+            (d, x) = digits.match(x).groups()
+            nd_l = []
+            for ch in nd:
+                nd_l.append(letterValue[ord(ch)])
+            nd = ''.join(nd_l)
+            if d == '':
+                d = 0
+            else:
+                d = int(d)
+            l.append(nd)
+            l.append(d)
+        return l
+
+class PackageFile:
+    """A Debian package file.
+
+    Objects of this class can be used to read Debian's Source and
+    Packages files."""
+
+    re_field = re.compile(r'^([A-Za-z][A-Za-z0-9-]+):(?:\s+(.*?))?\s*$')
+    re_continuation = re.compile(r'^\s+(?:\.|(\S.*?)\s*)$')
+
+    def __init__(self, name, fileObj=None):
+        """Creates a new package file object.
+
+        name - the name of the file the data comes from
+        fileObj - an alternate data source; the default is to open the
+                  file with the indicated name.
+        """
+        if fileObj is None:
+            fileObj = file(name)
+        self.name = name
+        self.file = fileObj
+        self.lineno = 0
+
+    def __iter__(self):
+        line = self.file.readline()
+        self.lineno += 1
+        pkg = []
+        while line:
+            if line == '\n':
+                if len(pkg) == 0:
+                    self.raiseSyntaxError('expected package record')
+                yield pkg
+                pkg = []
+                line = self.file.readline()
+                self.lineno += 1
+                continue
+            
+            match = self.re_field.match(line)
+            if not match:
+                self.raiseSyntaxError("expected package field")
+            (name, contents) = match.groups()
+            contents = contents or ''
+
+            while True:
+                line = self.file.readline()
+                self.lineno += 1
+                match = self.re_continuation.match(line)
+                if match:
+                    (ncontents,) = match.groups()
+                    if ncontents is None:
+                        ncontents = ""
+                    contents = "%s\n%s" % (contents, ncontents)
+                else:
+                    break
+            pkg.append((name, contents))
+        if pkg:
+            yield pkg
+
+    def raiseSyntaxError(self, msg, lineno=None):
+        if lineno is None:
+            lineno = self.lineno
+        raise ParseError(self.name, lineno, msg)
+
+# End of code from debian_support
+######################################################################
+
+# Command line parser
+
+def parse_cli():
+    """Reads sys.argv and returns an options object."""
+    parser = OptionParser(usage="%prog OPTIONS... --suite SUITE")
+    parser.add_option("--suite", type="choice",
+                      choices=['sarge', 'etch', 'sid'],
+                      help="set the Debian suite of this installation")
+    parser.add_option("--source", metavar="URL",
+                      help="sets the URL for the vulnerability information")
+    parser.add_option("--status", metavar="NAME",
+                      default="/var/lib/dpkg/status",
+                      help="name of the dpkg status file [default: %default]")
+    (options, args) = parser.parse_args()
+    if options.suite is None:
+        sys.stderr.write("error: the --suite option is required\n")
+        sys.exit(1)
+    return options
+
+class Vulnerability:
+    def __init__(self, str):
+        """Creates a new vulnerability object from a string."""
+        (bug, flags, package, version, description) = str.split(',', 4)
+        self.bug = bug
+        self.package = package
+        self.version = version
+        self.description = description
+        self.binary_package = flags[0] == 'B'
+
+    def is_vulnerable(self, (bin_pkg, bin_ver), (src_pkg, src_ver)):
+        """Returns true if the specified binary package is subject to
+        this vulnerability."""
+        self._parse()
+        if self.binary_package and bin_pkg == self.package:
+            if self.version:
+                return bin_ver < self.version
+            else:
+                return True
+        elif src_pkg == self.package:
+            if self.version:
+                return src_ver < self.version
+            else:
+                return True
+
+    def _parse(self):
+        """Further parses the object."""
+        if type(self.version) == types.StringType:
+            if self.version:
+                self.version = Version(self.version)
+            else:
+                self.version = None
+
+def fetch_data(options):
+    """Returns a dictionary PACKAGE -> LIST-OF-VULNERABILITIES."""
+    url = options.source
+    if not url:
+        url = "http://idssi.enyo.de/tracker/debsecan/release/"
+    elif url[-1] <> "/":
+        url += "/"
+    url = url + options.suite
+    u = urllib.urlopen(url)
+    data = []
+    while 1:
+        d = u.read(4096)
+        if d:
+            data.append(d)
+        else:
+            break
+    data = StringIO(zlib.decompress(''.join(data)))
+    if data.readline() <> "VERSION 0\n":
+        sys.stderr.write("error: server sends data in unknown format\n")
+        sys.exit(1)
+
+    packages = {}
+    for line in data:
+        if line[-1:] == '\n':
+            line = line[:-1]
+        v = Vulnerability(line)
+        try:
+            packages[v.package].append(v)
+        except KeyError:
+            packages[v.package] = [v]
+    return packages
+
+def rate_system(options, vulns):
+    packages = PackageFile(options.status)
+    re_source = re.compile\
+                (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
+    for pkg in packages:
+        pkg_name = None
+        pkg_version = None
+        pkg_arch = None
+        pkg_source = None
+        pkg_source_version = None
+        
+        for (name, contents) in pkg:
+            if name == "Package":
+                pkg_name = contents
+            elif name == "Version":
+                pkg_version = Version(contents)
+            elif name == "Source":
+                match = re_source.match(contents)
+                if match is None:
+                    raise SyntaxError(('package %s references '
+                                       + 'invalid source package %s') %
+                                      (pkg_name, `contents`))
+                (pkg_source, pkg_source_version) = match.groups()
+        if pkg_name is None:
+            raise SyntaxError\
+                  ("package record does not contain package name")
+        if pkg_version is None:
+            # Package is not installed.
+            continue
+        if not pkg_source:
+            pkg_source = pkg_name
+        if pkg_source_version:
+            pkg_source_version = Version(pkg_source_version)
+        else:
+            pkg_source_version = pkg_version
+        try:
+            vlist = vulns[pkg_name]
+        except KeyError:
+            continue
+        for v in vlist:
+            if v.is_vulnerable ((pkg_name, pkg_version),
+                                (pkg_source, pkg_source_version)):
+                if v.version:
+                    if v.binary_package:
+                        ver = pkg_version
+                    else:
+                        ver = pkg_source_version
+                    print v.bug, pkg_name, "(%s, need %s)" % (ver, v.version)
+                else:
+                    print v.bug, pkg_name
+
+options = parse_cli()
+rate_system(options, fetch_data(options))
