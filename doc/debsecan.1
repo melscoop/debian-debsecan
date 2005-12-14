@@ -62,6 +62,12 @@ and
 .B debsecan
 lists the names of vulnerabilities and binary packages, respectively.
 .TP
+.B --only-fixed
+Only list vulnerabilities for which a fix is available in the archive.
+Note that it can happen that a fix is listed, although the package has
+not been built for the system's architecture and is not yet available
+for download.
+.TP
 .B --help
 Display a short help message and exit.
 .TP

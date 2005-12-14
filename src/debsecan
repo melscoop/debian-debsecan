@@ -210,6 +210,8 @@ def parse_cli():
                       choices=['bugs', 'packages', 'summary'],
                       default="summary",
                       help="change output format")
+    parser.add_option("--only-fixed", action="store_true", dest="only_fixed",
+                help="list only vulnerabilities for which a fix is available")
     (options, args) = parser.parse_args()
     if options.suite is None:
         sys.stderr.write("error: the --suite option is required\n")
@@ -225,6 +227,7 @@ class Vulnerability:
         self.version = version
         self.description = description
         self.binary_package = flags[0] == 'B'
+        self.fix_available = flags[3] == 'F'
 
     def is_vulnerable(self, (bin_pkg, bin_ver), (src_pkg, src_ver)):
         """Returns true if the specified binary package is subject to
@@ -376,6 +379,8 @@ def rate_system(options, vulns):
             bp = (pkg_name, pkg_version)
             sp = (pkg_source, pkg_source_version)
             if v.is_vulnerable (bp, sp):
+                if options.only_fixed and not v.fix_available:
+                    continue
                 formatter.record(v, bp, sp)
     formatter.finish()
 
