@@ -207,7 +207,8 @@ def parse_cli():
                       default="/var/lib/dpkg/status",
                       help="name of the dpkg status file")
     parser.add_option("--format", type="choice",
-                      choices=['bugs', 'packages', 'summary', 'detail'],
+                      choices=['bugs', 'packages', 'summary', 'detail',
+                               'report'],
                       default="summary",
                       help="change output format")
     parser.add_option("--only-fixed", action="store_true", dest="only_fixed",
@@ -377,10 +378,65 @@ class DetailFormatter(Formatter):
             print "  fixed package: not yet available"
         print
 
+class ReportFormatter(Formatter):
+    def __init__(self, options):
+        self.bugs = {}
+        self.options = options
+
+    def record(self, v,
+               (bin_name, bin_version), (src_name, src_version)):
+
+        if self.bugs.has_key(v.bug):
+            self.bugs[v.bug].append(v)
+        else:
+            self.bugs[v.bug] = [v]
+
+    def finish(self):
+        print "Security report based on the %s release " % self.options.suite
+        print
+
+        for vlist in self.bugs.values():
+            vlist.sort(lambda a, b: cmp(a.package, b.package))
+
+        blist = self.bugs.items()
+        blist.sort()
+
+        def scan(fix_status):
+            first_bug = True
+            for (bug, vlist) in blist:
+                first_pkg = True
+                for v in vlist:
+                    if v.fix_available == fix_status:
+                        if first_bug:
+                            if fix_status:
+                                print "*** Available security updates"
+                            else:
+                                print "*** Vulnerabilities without updates"
+                            print
+                            first_bug = False
+                        if first_pkg:
+                            print "%s %s" % (v.bug, v.description)
+                            first_pkg = False
+                        notes = []
+                        if v.remote:
+                            notes.append("remotely exploitable")
+                        if v.urgency:
+                            notes.append(v.urgency + " urgency")
+                        notes = ', '.join(notes)
+                        if notes:
+                            print "  - %s (%s)" % (v.package, notes)
+                        else:
+                            print "  - %s" % v.package
+                        print
+
+        scan(True)
+        scan(False)
+
 formatters = {'bugs' : BugFormatter,
               'packages' : PackageFormatter,
               'summary' : SummaryFormatter,
-              'detail' : DetailFormatter}
+              'detail' : DetailFormatter,
+              'report' : ReportFormatter}
 
 def rate_system(options, vulns):
     """Read /var/lib/dpkg/status and discover vulnerable packages.
