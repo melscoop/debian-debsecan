@@ -443,5 +443,6 @@ def rate_system(options, vulns):
                 formatter.record(v, bp, sp)
     formatter.finish()
 
-options = parse_cli()
-rate_system(options, fetch_data(options))
+if __name__ == "__main__":
+    options = parse_cli()
+    rate_system(options, fetch_data(options))
