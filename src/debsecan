@@ -219,6 +219,10 @@ def parse_cli():
     return options
 
 class Vulnerability:
+    urgency_conversion = {' ' : '',
+                        'L' : 'low',
+                        'M' : 'medium',
+                        'H' : 'high'}
     def __init__(self, str):
         """Creates a new vulnerability object from a string."""
         (bug, flags, package, version, description) = str.split(',', 4)
@@ -227,6 +231,10 @@ class Vulnerability:
         self.version = version
         self.description = description
         self.binary_package = flags[0] == 'B'
+        self.urgency = self.urgency_conversion[flags[1]]
+        self.remote = {'?' : None,
+                       'R' : True,
+                       ' ' : False}[flags[2]]
         self.fix_available = flags[3] == 'F'
 
     def is_vulnerable(self, (bin_pkg, bin_ver), (src_pkg, src_ver)):
@@ -313,14 +321,18 @@ class PackageFormatter(Formatter):
 class SummaryFormatter(Formatter):
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
-        if v.version:
-            if v.binary_package:
-                ver = bin_version
-            else:
-                ver = src_version
-            print v.bug, bin_name, "(%s, need %s)" % (ver, v.version)
+        notes = []
+        if v.fix_available:
+            notes.append("fixed")
+        if v.remote:
+            notes.append("remotely exploitable")
+        if v.urgency:
+            notes.append(v.urgency + " urgency")
+        notes = ', '.join(notes)
+        if notes:
+            print "%s %s (%s)" % (v.bug, bin_name, notes)
         else:
-            print v.bug, bin_name
+            print "%s %s" % (v.bug, bin_name)
 
 formatters = {'bugs' : BugFormatter,
               'packages' : PackageFormatter,
