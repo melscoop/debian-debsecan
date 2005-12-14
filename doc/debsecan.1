@@ -93,8 +93,27 @@ If in doubt, specify
 when invoking
 .BR debsecan .
 This will result in some false positives, but not in false negatives.
+.SH EXAMPLES
+This command prints all package names for which security fixes are
+available:
+.IP
+.B debsecan --suite
+.I suite
+.B --format packages --only-fixed
+.PP
+If you pass this output to
+.BR apt-get ,
+you can download new packages which contain security fixes.  For example,
+if you are running sid:
+.IP
+.PD 0
+.B apt-get install \e
+.IP "" 1in
+.B $(debsecan --suite sid --format packages --only-fixed)
+.PP
 .SH AUTHOR
 .B debsecan
 was written by Florian Weimer.
 .SH "SEE ALSO"
-.BR dpkg "(1)"
+.BR dpkg "(1),"
+.BR apt-get "(8)"
