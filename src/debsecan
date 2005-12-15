@@ -18,6 +18,7 @@
 
 from cStringIO import StringIO
 from optparse import OptionParser
+import os
 import re
 import sys
 import types
@@ -213,9 +214,19 @@ def parse_cli():
                       help="change output format")
     parser.add_option("--only-fixed", action="store_true", dest="only_fixed",
                 help="list only vulnerabilities for which a fix is available")
+    parser.add_option("--history", default="/var/lib/debsecan/history",
+                      metavar="NAME",
+                      help="sets the file name of debsecan's internal status "
+                      + "file")
+    parser.add_option("--update-history", action="store_true",
+                      dest="update_history",
+                      help="update the history file after reporting")
     (options, args) = parser.parse_args()
     if options.suite is None:
         sys.stderr.write("error: the --suite option is required\n")
+        sys.exit(1)
+    if options.update_history and options.format <> 'report':
+        sys.stderr.write("error: --update-history requires report format\n")
         sys.exit(1)
     return options
 
@@ -382,6 +393,52 @@ class ReportFormatter(Formatter):
     def __init__(self, options):
         self.bugs = {}
         self.options = options
+        self.history = self._read_history(self.options.history)
+
+        # self.record will put new package status information here.
+        self.new_history = {}
+
+        # Fixed bugs are deleted from self.fixed_bugs by self.record.
+        self.fixed_bugs = {}
+        for (k, v) in self.history.items():
+            self.fixed_bugs[k] = v
+
+
+    def _read_history(self, name):
+        """Reads the named history file.  Returns a dictionary
+        (BUG, PACKAGE) -> UPDATE-AVAILABLE."""
+        try:
+            f = file(name)
+        except IOError:
+            return {}
+
+        line = f.readline()
+        if line <> 'VERSION 0\n':
+            return {}
+
+        result = {}
+        for line in f:
+            if line[-1:] == '\n':
+                line = line[:-1]
+            (bug, package, fixed) = line.split(',')
+            result[(bug, package)] = fixed == 'F'
+        f.close()
+        return result
+
+    def _write_history(self, name):
+        """Writes self.new_history to the named history file.
+        The file is replaced atomically."""
+        new_name = name + '.new'
+        f = file(new_name, "w+")
+        f.write("VERSION 0\n")
+        for ((bug, package), fixed) in self.new_history.items():
+            if fixed:
+                fixed = 'F'
+            else:
+                fixed = ' '
+            f.write("%s,%s,%s\n" % (bug, package, fixed))
+        f.close()
+        os.rename(new_name, name)
 
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
@@ -390,6 +447,12 @@ class ReportFormatter(Formatter):
             self.bugs[v.bug].append(v)
         else:
             self.bugs[v.bug] = [v]
+        bn = (v.bug, bin_name)
+        self.new_history[bn] = v.fix_available
+        try:
+            del self.fixed_bugs[bn]
+        except KeyError:
+            pass
 
     def finish(self):
         print "Security report based on the %s release " % self.options.suite
@@ -401,36 +464,73 @@ class ReportFormatter(Formatter):
         blist = self.bugs.items()
         blist.sort()
 
-        def scan(fix_status):
+        def scan(fix_status, new_status):
             first_bug = True
             for (bug, vlist) in blist:
                 first_pkg = True
                 for v in vlist:
-                    if v.fix_available == fix_status:
-                        if first_bug:
-                            if fix_status:
+                    if v.fix_available:
+                        is_new = not self.history.get((v.bug, v.package),
+                                                      False)
+                    else:
+                        is_new = self.history.get((v.bug, v.package), True)
+                    if v.fix_available <> fix_status or is_new <> new_status:
+                        continue
+
+                    if first_bug:
+                        if fix_status:
+                            if new_status:
+                                print "*** New security updates"
+                            else:
                                 print "*** Available security updates"
+                        else:
+                            if new_status:
+                                print "*** New vulnerabilities"
                             else:
                                 print "*** Vulnerabilities without updates"
-                            print
-                            first_bug = False
-                        if first_pkg:
-                            print "%s %s" % (v.bug, v.description)
-                            first_pkg = False
-                        notes = []
-                        if v.remote:
-                            notes.append("remotely exploitable")
-                        if v.urgency:
-                            notes.append(v.urgency + " urgency")
-                        notes = ', '.join(notes)
-                        if notes:
-                            print "  - %s (%s)" % (v.package, notes)
-                        else:
-                            print "  - %s" % v.package
                         print
+                        first_bug = False
+                    if first_pkg:
+                        print "%s %s" % (v.bug, v.description)
+                        first_pkg = False
+                    notes = []
+                    if v.remote:
+                        notes.append("remotely exploitable")
+                    if v.urgency:
+                        notes.append(v.urgency + " urgency")
+                    notes = ', '.join(notes)
+                    if notes:
+                        print "  - %s (%s)" % (v.package, notes)
+                    else:
+                        print "  - %s" % v.package
+                    print
 
-        scan(True)
-        scan(False)
+        def scan_fixed():
+            first_bug = True
+            old_bug = ''
+            for (bug, package) in self.fixed_bugs.keys():
+                if first_bug:
+                    print "*** Fixed vulnerabilities"
+                    first_bug = False
+                if bug <> old_bug:
+                    print
+                    print bug
+                print "  - %s" % package
+            if not first_bug:
+                print
+
+        scan(fix_status=True, new_status=True)
+        scan_fixed()
+        scan(fix_status=True, new_status=False)
+        scan(fix_status=False, new_status=True)
+        scan(fix_status=False, new_status=False)
+
+        for fix_status in (True, False):
+            for new_status in (True, False):
+                scan (fix_status, new_status)
+
+        if options.update_history:
+            self._write_history(self.options.history)
 
 formatters = {'bugs' : BugFormatter,
               'packages' : PackageFormatter,
