@@ -16,4 +16,7 @@ A web interface to the database is available at:
 
   <http://idssi.enyo.de/tracker/>
 
- -- Florian Weimer <fw@deneb.enyo.de>, Wed Dec 14 13:44:08 2005
+WARNING: debsecan is still a bit experimental.  As usual, use it at
+your own risk.
+
+ -- Florian Weimer <fw@deneb.enyo.de>, Thu Dec 15 10:25:14 2005
