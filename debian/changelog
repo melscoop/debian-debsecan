@@ -1,3 +1,9 @@
+debsecan (0.2) unstable; urgency=low
+
+  * Remove duplicate output from --format report.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Thu, 15 Dec 2005 11:20:08 +0100
+
 debsecan (0.1) unstable; urgency=low
 
   * First version.

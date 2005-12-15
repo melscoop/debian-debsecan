@@ -552,10 +552,6 @@ class ReportFormatter(Formatter):
         scan(fix_status=False, new_status=True)
         scan(fix_status=False, new_status=False)
 
-        for fix_status in (True, False):
-            for new_status in (True, False):
-                scan (fix_status, new_status)
-
         if options.update_history:
             self._write_history(self.options.history)
 
