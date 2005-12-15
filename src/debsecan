@@ -468,7 +468,19 @@ class ReportFormatter(Formatter):
         except KeyError:
             pass
 
+    def _status_changed(self):
+        """Returns true if the system's vulnerability status changed
+        since the last run."""
+
+        for (k, v) in self.new_history.items():
+            if (not self.history.has_key(k)) or self.history[k] <> v:
+                return True
+        return len(self.fixed_bugs.keys()) > 0
+
     def finish(self):
+        if self.options.mailto and not self._status_changed():
+            return
+
         w = self.target.write
         w("Security report based on the %s release " % self.options.suite)
         w("")
@@ -564,17 +576,24 @@ class Target:
 class TargetMail(Target):
     def __init__(self, options):
         assert options.mailto
+        self.options = options
+        self.sendmail = None
+
+    def _open(self):
         self.sendmail = os.popen("/usr/sbin/sendmail -t", "w")
         self.sendmail.write("""Subject: Debian security status of %s
 To: %s
 
-""" % (socket.gethostname(), options.mailto))
+""" % (socket.gethostname(), self.options.mailto))
 
     def write(self, line):
+        if self.sendmail is None:
+            self._open()
         self.sendmail.write(line + '\n')
 
     def finish(self):
-        self.sendmail.close()
+        if self.sendmail is not None:
+            self.sendmail.close()
 
 class TargetPrint(Target):
     def write(self, line):
