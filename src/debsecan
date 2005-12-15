@@ -228,6 +228,9 @@ def parse_cli():
     if options.update_history and options.format <> 'report':
         sys.stderr.write("error: --update-history requires report format\n")
         sys.exit(1)
+    if options.format == 'report' and options.only_fixed:
+        sys.stderr.write("error: --only-fixed conflicts with report format\n")
+        sys.exit(1)
     return options
 
 # Vulnerabilities
