@@ -6,3 +6,5 @@ if test "$1" = "remove" ; then
     rm -f /var/lib/debsecan/history
     rm -f /var/lib/debsecan/history.new
 fi
+
+#DEBHELPER#
