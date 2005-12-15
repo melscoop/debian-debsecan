@@ -20,6 +20,7 @@ from cStringIO import StringIO
 from optparse import OptionParser
 import os
 import re
+import socket
 import sys
 import types
 import urllib
@@ -221,12 +222,16 @@ def parse_cli():
     parser.add_option("--update-history", action="store_true",
                       dest="update_history",
                       help="update the history file after reporting")
+    parser.add_option("--mailto", help="send report to an email address")
     (options, args) = parser.parse_args()
     if options.suite is None:
         sys.stderr.write("error: the --suite option is required\n")
         sys.exit(1)
     if options.update_history and options.format <> 'report':
         sys.stderr.write("error: --update-history requires report format\n")
+        sys.exit(1)
+    if options.mailto and options.format <> 'report':
+        sys.stderr.write("error: --mailto requires report format\n")
         sys.exit(1)
     if options.format == 'report' and options.only_fixed:
         sys.stderr.write("error: --only-fixed conflicts with report format\n")
@@ -315,13 +320,16 @@ def fetch_data(options):
 # Classes for output formatting
 
 class Formatter:
-    def __init__(self, options):
+    def __init__(self, target, options):
+        self.target = target
+        self.options = options
         pass
     def finish(self):
         pass
 
 class BugFormatter(Formatter):
-    def __init__(self, options):
+    def __init__(self, target, options):
+        self.target = target
         self.bugs = {}
     def record(self, v, bp, sp):
         self.bugs[v.bug] = 1
@@ -329,10 +337,11 @@ class BugFormatter(Formatter):
         bugs = self.bugs.keys()
         bugs.sort()
         for b in bugs:
-            print b
+            self.target.write(b)
 
 class PackageFormatter(Formatter):
-    def __init__(self, options):
+    def __init__(self, target, options):
+        self.target = target
         self.packages = {}
     def record(self, v, (bin_name, bin_version), sp):
         self.packages[bin_name] = 1
@@ -340,7 +349,7 @@ class PackageFormatter(Formatter):
         packages = self.packages.keys()
         packages.sort()
         for p in packages:
-            print p
+            self.target.write(p)
 
 class SummaryFormatter(Formatter):
     def record(self, v,
@@ -354,9 +363,9 @@ class SummaryFormatter(Formatter):
             notes.append(v.urgency + " urgency")
         notes = ', '.join(notes)
         if notes:
-            print "%s %s (%s)" % (v.bug, bin_name, notes)
+            self.target.write("%s %s (%s)" % (v.bug, bin_name, notes))
         else:
-            print "%s %s" % (v.bug, bin_name)
+            self.target.write("%s %s" % (v.bug, bin_name))
 
 class DetailFormatter(Formatter):
     def record(self, v,
@@ -370,30 +379,32 @@ class DetailFormatter(Formatter):
             notes.append(v.urgency + " urgency")
         notes = ', '.join(notes)
         if notes:
-            print "%s (%s)" % (v.bug, notes)
+            self.target.write("%s (%s)" % (v.bug, notes))
         else:
-            print v.bug
-        print "  " + v.description
-        print "  installed: %s %s" \
-              % (bin_name, bin_version)
-        print "             (built from %s %s)" \
-              % (src_name, src_version)
+            self.target.write(v.bug)
+        self.target.write("  " + v.description)
+        self.target.write("  installed: %s %s"
+                          % (bin_name, bin_version))
+        self.target.write("             (built from %s %s)"
+                          % (src_name, src_version))
         if v.binary_package:
             k = 'binary'
         else:
             k = 'source'
         if v.fix_available:
-            print "  fixed package: %s %s (%s package)" \
-                  % (v.package, v.version, k)
+            self.target.write("  fixed package: %s %s (%s package)"
+                              % (v.package, v.version, k))
         elif v.version:
-            print "  fixed package: %s %s (%s package, not backported)" \
-                  % (v.package, v.version, k)
+            self.target.write(
+                "  fixed package: %s %s (%s package, not backported)"
+                % (v.package, v.version, k))
         else:
-            print "  fixed package: not yet available"
-        print
+            self.target.write("  fixed package: not yet available")
+        self.target.write("")
 
 class ReportFormatter(Formatter):
-    def __init__(self, options):
+    def __init__(self, target, options):
+        self.target = target
         self.bugs = {}
         self.options = options
         self.history = self._read_history(self.options.history)
@@ -458,8 +469,9 @@ class ReportFormatter(Formatter):
             pass
 
     def finish(self):
-        print "Security report based on the %s release " % self.options.suite
-        print
+        w = self.target.write
+        w("Security report based on the %s release " % self.options.suite)
+        w("")
 
         for vlist in self.bugs.values():
             vlist.sort(lambda a, b: cmp(a.package, b.package))
@@ -483,18 +495,18 @@ class ReportFormatter(Formatter):
                     if first_bug:
                         if fix_status:
                             if new_status:
-                                print "*** New security updates"
+                                w("*** New security updates")
                             else:
-                                print "*** Available security updates"
+                                w("*** Available security updates")
                         else:
                             if new_status:
-                                print "*** New vulnerabilities"
+                                w("*** New vulnerabilities")
                             else:
-                                print "*** Vulnerabilities without updates"
-                        print
+                                w("*** Vulnerabilities without updates")
+                        w("")
                         first_bug = False
                     if first_pkg:
-                        print "%s %s" % (v.bug, v.description)
+                        w("%s %s" % (v.bug, v.description))
                         first_pkg = False
                     notes = []
                     if v.remote:
@@ -503,24 +515,24 @@ class ReportFormatter(Formatter):
                         notes.append(v.urgency + " urgency")
                     notes = ', '.join(notes)
                     if notes:
-                        print "  - %s (%s)" % (v.package, notes)
+                        w("  - %s (%s)" % (v.package, notes))
                     else:
-                        print "  - %s" % v.package
-                    print
+                        w("  - %s" % v.package)
+                    w("")
 
         def scan_fixed():
             first_bug = True
             old_bug = ''
             for (bug, package) in self.fixed_bugs.keys():
                 if first_bug:
-                    print "*** Fixed vulnerabilities"
+                    w("*** Fixed vulnerabilities")
                     first_bug = False
                 if bug <> old_bug:
-                    print
-                    print bug
-                print "  - %s" % package
+                    w("")
+                    w(bug)
+                w("  - %s" % package)
             if not first_bug:
-                print
+                w("")
 
         scan(fix_status=True, new_status=True)
         scan_fixed()
@@ -541,7 +553,35 @@ formatters = {'bugs' : BugFormatter,
               'detail' : DetailFormatter,
               'report' : ReportFormatter}
 
-def rate_system(options, vulns):
+# Targets
+
+class Target:
+    def __init__(self, options):
+        pass
+    def finish(self):
+        pass
+
+class TargetMail(Target):
+    def __init__(self, options):
+        assert options.mailto
+        self.sendmail = os.popen("/usr/sbin/sendmail -t", "w")
+        self.sendmail.write("""Subject: Debian security status of %s
+To: %s
+
+""" % (socket.gethostname(), options.mailto))
+
+    def write(self, line):
+        self.sendmail.write(line + '\n')
+
+    def finish(self):
+        self.sendmail.close()
+
+class TargetPrint(Target):
+    def write(self, line):
+        print line
+
+
+def rate_system(target, options, vulns):
     """Read /var/lib/dpkg/status and discover vulnerable packages.
     The results are printed using one of the formatter classes.
 
@@ -550,7 +590,7 @@ def rate_system(options, vulns):
     packages = PackageFile(options.status)
     re_source = re.compile\
                 (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
-    formatter = formatters[options.format](options)
+    formatter = formatters[options.format](target, options)
     for pkg in packages:
         pkg_name = None
         pkg_status = None
@@ -603,7 +643,12 @@ def rate_system(options, vulns):
                     continue
                 formatter.record(v, bp, sp)
     formatter.finish()
+    target.finish()
 
 if __name__ == "__main__":
     options = parse_cli()
-    rate_system(options, fetch_data(options))
+    if options.mailto:
+        target = TargetMail(options)
+    else:
+        target = TargetPrint(options)
+    rate_system(target, options, fetch_data(options))

@@ -65,7 +65,18 @@ lists the names of vulnerabilities and binary packages, respectively.
 requests a verbose output format, showing all available data.
 The
 .B report
-format is the recommended output format for email reports.
+format is used for email reports.
+.TP
+.B --mailto \fImailbox\fP
+The
+.B --mailto
+option instructions
+.B debsecan
+to the send the report to the email address
+.IR mailbox .
+This option requires the
+.B --format report
+output format.
 .TP
 .B --only-fixed
 Only list vulnerabilities for which a fix is available in the archive.
@@ -123,7 +134,17 @@ if you are running sid:
 .B apt-get install \e
 .IP "" 1in
 .B $(debsecan --suite sid --format packages --only-fixed)
+.PD
 .PP
+The following command can be invoked periodically, to get
+notifications of new security issues:
+.IP
+.PD 0
+.B debsecan --suite
+.I suite
+.B --format report \e
+.IP "" 1in
+.B --update-history --mailto root
 .SH AUTHOR
 .B debsecan
 was written by Florian Weimer.
