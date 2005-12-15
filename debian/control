@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Florian Weimer <fw@deneb.enyo.de>
 Build-Depends: debhelper (>= 4.0.0)
-Standards-Version: 3.6.1.0
+Standards-Version: 3.6.2.1
 
 Package: debsecan
 Architecture: all
