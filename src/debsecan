@@ -16,6 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
+VERSION = "0.2"
+
 from cStringIO import StringIO
 from optparse import OptionParser
 import os
@@ -285,6 +287,9 @@ class Vulnerability:
             else:
                 self.version = None
 
+class DebsecanOpener(urllib.FancyURLopener):
+    version = "debsecan/" + VERSION
+
 def fetch_data(options):
     """Returns a dictionary PACKAGE -> LIST-OF-VULNERABILITIES."""
     url = options.source
@@ -294,7 +299,7 @@ def fetch_data(options):
     elif url[-1] <> "/":
         url += "/"
     url = url + options.suite
-    u = urllib.urlopen(url)
+    u = DebsecanOpener().open(url)
     data = []
     while 1:
         d = u.read(4096)
