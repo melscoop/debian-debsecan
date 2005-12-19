@@ -505,7 +505,7 @@ class ReportFormatter(Formatter):
         since the last run."""
 
         for (k, v) in self.new_history.items():
-            if (not self.history.has_key(k)) or self.history[k] <> v:
+            if (not self.history.known(k)) or self.history.fixed(k) <> v:
                 return True
         return len(self.fixed_bugs.keys()) > 0
 
