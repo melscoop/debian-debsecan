@@ -1,0 +1,7 @@
+Security report based on the sid release 
+
+*** Available security updates
+
+CVE-2005-0034 An &quot;incorrect assumption&quot; in the authvalidated validator function in ...
+  - libisc7 (remotely exploitable)
+

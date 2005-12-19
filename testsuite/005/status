@@ -1,0 +1,20 @@
+Package: libisc7
+Status: install ok installed
+Priority: standard
+Section: libs
+Installed-Size: 332
+Maintainer: LaMont Jones <lamont@debian.org>
+Architecture: i386
+Source: bind9
+Version: 1:9.2.4-1
+Replaces: libbind0
+Depends: libc6 (>= 2.3.2.ds1-4)
+Conflicts: libbind0
+Description: ISC Shared Library used by BIND
+ The Berkeley Internet Name Domain (BIND) implements an Internet domain
+ name server.  BIND is the most widely-used name server software on the
+ Internet, and is supported by the Internet Software Consortium, www.isc.org.
+ .
+ This package delivers the libisc shared library used by BIND's daemons and
+ clients.
+

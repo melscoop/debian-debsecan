@@ -1,0 +1,6 @@
+CVE-2005-0034 (fixed, remotely exploitable)
+  An &quot;incorrect assumption&quot; in the authvalidated validator function in ...
+  installed: libisc7 1:9.2.4-1
+             (built from bind9 1:9.2.4-1)
+  fixed package: bind9 1:9.3.1 (source package)
+
