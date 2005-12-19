@@ -653,9 +653,12 @@ def rate_system(target, options, vulns):
         else:
             pkg_source_version = pkg_version
         try:
-            vlist = vulns[pkg_name]
+            vlist = vulns[pkg_source]
         except KeyError:
-            continue
+            try:
+                vlist = vulns[pkg_name]
+            except:
+                continue
         for v in vlist:
             bp = (pkg_name, pkg_version)
             sp = (pkg_source, pkg_source_version)
