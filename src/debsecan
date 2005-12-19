@@ -561,11 +561,12 @@ class ReportFormatter(Formatter):
             for (bug, vlist) in blist:
                 first_pkg = True
                 for v in vlist:
+                    bug_package = (v.bug, v.installed_package)
                     if v.fix_available:
-                        is_new = not self.history.fixed((v.bug, v.package))
+                        is_new = not self.history.fixed(bug_package)
                     else:
-                        is_new = (not self.history.known((v.bug, v.package))) \
-                                 or self.history.fixed((v.bug, v.package))
+                        is_new = (not self.history.known(bug_package)) \
+                                 or self.history.fixed(bug_package)
                     if v.fix_available <> fix_status or is_new <> new_status:
                         continue
 
