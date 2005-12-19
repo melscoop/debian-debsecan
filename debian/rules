@@ -31,7 +31,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/<packagename>.
-	install -d debian/`dh_listpackages`/var/lib/debsecan
+	install -d -o daemon -g daemon debian/`dh_listpackages`/var/lib/debsecan
 	install -D -m 0755 src/debsecan \
 		debian/`dh_listpackages`/usr/bin/debsecan
 	install -D -m 0755 doc/debsecan.1 \

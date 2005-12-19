@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+	# fix permissions on upgrade
+	if test "$2" = "0.1" ; then
+	    chown daemon.daemon /var/lib/debsecan
+	    if test -e /var/lib/debsecan/history ; then
+		chown daemon.daemon /var/lib/debsecan/history
+	    fi
+	    rm -f /var/lib/debsecan/history.new
+	fi
+	;;
+esac
+
+#DEBHELPER#
