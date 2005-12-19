@@ -18,6 +18,7 @@
 
 VERSION = "0.2"
 
+import copy
 from cStringIO import StringIO
 from optparse import OptionParser
 import os
@@ -279,6 +280,12 @@ class Vulnerability:
             else:
                 return True
 
+    def installed(self, name):
+        """Returns a new vulnerability object for the installed package."""
+        v = copy.copy(self)
+        v.installed_package = name
+        return v
+
     def _parse(self):
         """Further parses the object."""
         if type(self.version) == types.StringType:
@@ -481,6 +488,7 @@ class ReportFormatter(Formatter):
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
 
+        v = v.installed(bin_name)
         if self.bugs.has_key(v.bug):
             self.bugs[v.bug].append(v)
         else:
@@ -551,9 +559,10 @@ class ReportFormatter(Formatter):
                         notes.append(v.urgency + " urgency")
                     notes = ', '.join(notes)
                     if notes:
-                        w("  - %s (%s)" % (v.package, notes))
+                        w("  - %s (%s)" % (v.installed_package, notes))
                     else:
-                        w("  - %s" % v.package)
+                        w("  - %s" % v.installed_package)
+                if not first_pkg:
                     w("")
 
         def scan_fixed():
