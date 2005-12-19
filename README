@@ -6,8 +6,11 @@ of vulnerabilities which affect a particular Debian installation.
 debsecan runs on the host which is to be checked, and downloads
 vulnerability information over the Internet.  It can send mail to
 interested parties when new vulnerabilities are discovered or when
-security updates become available.  For details, see the debsecan(1)
-manual page.
+security updates become available.
+
+For details, see the debsecan(1) manual page.  For instructions how to
+create a suitable, randomized cron entry, see the
+debsecan-create-cron(8) manual page.
 
 The vulnerability database is maintained by the Debian testing
 security team:
@@ -21,4 +24,4 @@ A web interface to the database is available at:
 WARNING: debsecan is still a bit experimental.  As usual, use it at
 your own risk.
 
- -- Florian Weimer <fw@deneb.enyo.de>, Thu Dec 15 11:09:43 2005
+ -- Florian Weimer <fw@deneb.enyo.de>, Mon Dec 19 19:21:34 2005

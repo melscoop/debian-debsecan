@@ -99,7 +99,9 @@ Update the vulnerability status information after reporting it using
 Internal option used for invocations from
 .BR cron .
 Checks if the vulnerability data has already been downloaded today.
-In this case, further processing is skipped.
+In this case, further processing is skipped.  See
+.BR debsecan-create-cron (8)
+for instructions how to create a suitable cron entry.
 .TP
 .B --help
 Display a short help message and exit.
@@ -159,4 +161,5 @@ notifications of new security issues:
 was written by Florian Weimer.
 .SH "SEE ALSO"
 .BR dpkg "(1),"
+.BR debsecan-create-cron "(8),"
 .BR apt-get "(8)"

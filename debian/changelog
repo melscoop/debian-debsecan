@@ -4,9 +4,10 @@ debsecan (0.2) unstable; urgency=low
   * Fix handling of binary packages (important fix, old output was very
     incomplete).
   * Switch to secure-testing.debian.net as vulnerability data source.
+  * Add debsecan-create-cron script.
   * Use daemon:daemon for history data.
 
- -- Florian Weimer <fw@deneb.enyo.de>  Mon, 19 Dec 2005 17:05:35 +0100
+ -- Florian Weimer <fw@deneb.enyo.de>  Mon, 19 Dec 2005 19:26:06 +0100
 
 debsecan (0.1) unstable; urgency=low
 

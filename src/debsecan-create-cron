@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -e
+
+FILE=/etc/cron.d/debsecan
+
+if test -z "$1" ; then
+    echo "usage: $0 SUITE"
+    exit 1
+fi
+
+if test -e "$FILE" ; then
+    echo "error: cron file $FILE already exists"
+    exit 1
+fi
+
+MIN=$(($RANDOM % 60))
+
+cat > "$FILE" <<EOF
+# cron entry for debsecan
+#
+# AUTOMATICALLY GENERATED
+# (Delete the preceding line if you edit this file.)
+
+$MIN * * * * daemon /usr/bin/debsecan --suite $1 --mailto root --cron
+# (Note: debsecan delays actual processing past 2:00 AM, and runs only
+# once per day.)
+EOF
+
+echo "$0: cron file $FILE created."
+exit 0
