@@ -13,12 +13,13 @@ for testcase in [0-9][0-9][0-9] ; do
 		python ../src/debsecan --suite $suite \
 		    --source "$url/$testcase" \
 		    --history $testcase/history \
+		    --status $testcase/status \
 		    --format $format > $testcase/out.$format
 		if test $format = summary ; then
 		    sort $testcase/out.$format > $testcase/out.$format.1
 		    mv $testcase/out.$format.1 $testcase/out.$format
 		fi
-		diff -u $testcase/out.$format $testcase/exp.$format
+		diff -u $testcase/exp.$format $testcase/out.$format
 	    fi
 	done
     done
