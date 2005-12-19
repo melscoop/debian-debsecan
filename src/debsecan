@@ -25,6 +25,7 @@ import os
 import re
 import socket
 import sys
+import time
 import types
 import urllib
 import zlib
@@ -226,10 +227,18 @@ def parse_cli():
                       dest="update_history",
                       help="update the history file after reporting")
     parser.add_option("--mailto", help="send report to an email address")
+    parser.add_option("--cron", action="store_true",
+                      help="debsecan is invoked from cron")
     (options, args) = parser.parse_args()
     if options.suite is None:
         sys.stderr.write("error: the --suite option is required\n")
         sys.exit(1)
+    if options.cron:
+        options.format = 'report'
+        options.update_history = True
+        if not options.mailto:
+            sys.stderr.write("error: --cron option requires --mailto\n")
+            sys.exit(1)
     if options.update_history and options.format <> 'report':
         sys.stderr.write("error: --update-history requires report format\n")
         sys.exit(1)
@@ -239,6 +248,7 @@ def parse_cli():
     if options.format == 'report' and options.only_fixed:
         sys.stderr.write("error: --only-fixed conflicts with report format\n")
         sys.exit(1)
+    options.need_history = options.format == 'report'
     return options
 
 # Vulnerabilities
@@ -335,12 +345,27 @@ def fetch_data(options):
 class History:
     def __init__(self, options):
         self.options = options
-        self.history = self._read_history(self.options.history)
+        self.last_updated = 86400
+        self._read_history(self.options.history)
 
     def data(self):
         """Returns a dictionary (BUG, PACKAGE) -> UPDATE-AVAILABLE.
         The result is not shared with the internal dictionary."""
         return self.history.copy()
+
+    def expired(self):
+        """Returns true if the stored history file is out of date."""
+        if self.options.cron:
+            old = time.localtime(self.last_updated)
+            now = time.localtime()
+            def ymd(t):
+                return (t.tm_year, t.tm_mon, t.tm_mday)
+            if ymd(old) == ymd(now):
+                return False
+            return now.tm_hour >= 2
+        else:
+            # If we aren't run from cron, we always download new data.
+            return True
 
     def known(self, v):
         """Returns true if the vulnerability is known."""
@@ -354,28 +379,34 @@ class History:
     def _read_history(self, name):
         """Reads the named history file.  Returns a dictionary
         (BUG, PACKAGE) -> UPDATE-AVAILABLE."""
+
+        self.history = {}
+
         try:
             f = file(name)
         except IOError:
-            return {}
+            return
 
         line = f.readline()
-        if line <> 'VERSION 0\n':
-            return {}
+        if line == 'VERSION 0\n':
+            pass
+        elif line == 'VERSION 1\n':
+            line = f.readline()
+            self.last_updated = int(line)
+        else:
+            return
 
-        result = {}
         for line in f:
             if line[-1:] == '\n':
                 line = line[:-1]
             (bug, package, fixed) = line.split(',')
-            result[(bug, package)] = fixed == 'F'
+            self.history[(bug, package)] = fixed == 'F'
         f.close()
-        return result
 
 # Classes for output formatting
 
 class Formatter:
-    def __init__(self, target, options):
+    def __init__(self, target, options, history):
         self.target = target
         self.options = options
         pass
@@ -383,7 +414,7 @@ class Formatter:
         pass
 
 class BugFormatter(Formatter):
-    def __init__(self, target, options):
+    def __init__(self, target, options, history):
         self.target = target
         self.bugs = {}
     def record(self, v, bp, sp):
@@ -395,7 +426,7 @@ class BugFormatter(Formatter):
             self.target.write(b)
 
 class PackageFormatter(Formatter):
-    def __init__(self, target, options):
+    def __init__(self, target, options, history):
         self.target = target
         self.packages = {}
     def record(self, v, (bin_name, bin_version), sp):
@@ -458,11 +489,11 @@ class DetailFormatter(Formatter):
         self.target.write("")
 
 class ReportFormatter(Formatter):
-    def __init__(self, target, options):
+    def __init__(self, target, options, history):
         self.target = target
         self.bugs = {}
         self.options = options
-        self.history = History(self.options)
+        self.history = history
 
         # self.record will put new package status information here.
         self.new_history = {}
@@ -475,7 +506,7 @@ class ReportFormatter(Formatter):
         The file is replaced atomically."""
         new_name = name + '.new'
         f = file(new_name, "w+")
-        f.write("VERSION 0\n")
+        f.write("VERSION 1\n%d\n" % int(time.time()))
         for ((bug, package), fixed) in self.new_history.items():
             if fixed:
                 fixed = 'F'
@@ -511,6 +542,8 @@ class ReportFormatter(Formatter):
 
     def finish(self):
         if self.options.mailto and not self._status_changed():
+            if options.update_history:
+                self._write_history(self.options.history)
             return
 
         w = self.target.write
@@ -637,7 +670,7 @@ class TargetPrint(Target):
         print line
 
 
-def rate_system(target, options, vulns):
+def rate_system(target, options, vulns, history):
     """Read /var/lib/dpkg/status and discover vulnerable packages.
     The results are printed using one of the formatter classes.
 
@@ -646,7 +679,7 @@ def rate_system(target, options, vulns):
     packages = PackageFile(options.status)
     re_source = re.compile\
                 (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
-    formatter = formatters[options.format](target, options)
+    formatter = formatters[options.format](target, options, history)
     for pkg in packages:
         pkg_name = None
         pkg_status = None
@@ -706,8 +739,14 @@ def rate_system(target, options, vulns):
 
 if __name__ == "__main__":
     options = parse_cli()
+    if options.need_history:
+        history = History(options)
+        if not history.expired():
+            sys.exit(0)
+    else:
+        history = None
     if options.mailto:
         target = TargetMail(options)
     else:
         target = TargetPrint(options)
-    rate_system(target, options, fetch_data(options))
+    rate_system(target, options, fetch_data(options), history)
