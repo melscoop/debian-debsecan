@@ -566,17 +566,25 @@ class ReportFormatter(Formatter):
                     w("")
 
         def scan_fixed():
-            first_bug = True
-            old_bug = ''
+            bugs = {}
             for (bug, package) in self.fixed_bugs.keys():
+                if bugs.has_key(bug):
+                    bugs[bug].append(package)
+                else:
+                    bugs[bug] = [package]
+            bug_names = bugs.keys()
+            bug_names.sort()
+
+            first_bug = True
+            for bug in bug_names:
                 if first_bug:
                     w("*** Fixed vulnerabilities")
-                    first_bug = False
-                if bug <> old_bug:
                     w("")
-                    w(bug)
-                w("  - %s" % package)
-            if not first_bug:
+                    first_bug = False
+                w(bug)
+                bugs[bug].sort()
+                for p in bugs[bug]:
+                    w("  - %s" % p)
                 w("")
 
         scan(fix_status=True, new_status=True)
