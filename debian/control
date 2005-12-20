@@ -8,6 +8,7 @@ Standards-Version: 3.6.2.1
 Package: debsecan
 Architecture: all
 Depends: python (>= 2.3)
+Recommends: cron, exim4 | mail-transport-agent
 Description: Debian Security Analyzer
  debsecan is a tool to generate a list of vulnerabilities which affect
  a particular Debian installation.  debsecan runs on the host which is

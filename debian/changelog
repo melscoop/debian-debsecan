@@ -1,3 +1,9 @@
+debsecan (0.2.2) unstable; urgency=low
+
+  * Add Recommends: for cron and mail-transport-agent.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Tue, 20 Dec 2005 12:01:41 +0100
+
 debsecan (0.2.1) unstable; urgency=low
 
   * Fix permissions of /var/lib/debsecan.  Closes: #344117.
