@@ -1,3 +1,9 @@
+debsecan (0.2.1) unstable; urgency=low
+
+  * Fix permissions of /var/lib/debsecan.  Closes: #344117.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Tue, 20 Dec 2005 11:17:28 +0100
+
 debsecan (0.2) unstable; urgency=low
 
   * Remove duplicate output from --format report.
