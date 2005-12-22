@@ -4,9 +4,21 @@ set -e
 
 FILE=/etc/cron.d/debsecan
 
-if test -z "$1" ; then
+usage () {
     echo "usage: $0 SUITE"
     exit 1
+}
+
+if test "x$1" = "x--suite" ; then
+    shift
+fi
+
+if test $# -ne 1 ; then
+    usage
+fi
+
+if test -z "$1" ; then
+    usage
 fi
 
 if test -e "$FILE" ; then
