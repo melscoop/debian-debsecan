@@ -3,6 +3,8 @@ debsecan (0.2.2) unstable; urgency=low
   * Add Recommends: for cron and mail-transport-agent.
   * Make debsecan-create-cron more robust to a --suite option.
     Closes: #344204.
+  * Gracefully ignore packages with invalid version information.
+    Closes: #344106.
 
  -- Florian Weimer <fw@deneb.enyo.de>  Thu, 22 Dec 2005 10:27:54 +0100
 

@@ -410,6 +410,16 @@ class Formatter:
         self.target = target
         self.options = options
         pass
+    def invalid_version(self, package, version):
+        sys.stdout.flush()
+        sys.stderr.write("invalid version %s of package %s\n"
+                         % (version, package))
+        sys.stderr.flush()
+    def invalid_source_version(self, package, version):
+        sys.stdout.flush()
+        sys.stderr.write("invalid source version %s of package %s\n"
+                         % (version, package))
+        sys.stderr.flush()
     def finish(self):
         pass
 
@@ -494,6 +504,7 @@ class ReportFormatter(Formatter):
         self.bugs = {}
         self.options = options
         self.history = history
+        self.invalid = []
 
         # self.record will put new package status information here.
         self.new_history = {}
@@ -530,6 +541,11 @@ class ReportFormatter(Formatter):
             del self.fixed_bugs[bn]
         except KeyError:
             pass
+
+    def invalid_version(self, package, version):
+        self.invalid.append(package)
+    def invalid_source_version(self, package, version):
+        self.invalid.append(package)
 
     def _status_changed(self):
         """Returns true if the system's vulnerability status changed
@@ -621,11 +637,23 @@ class ReportFormatter(Formatter):
                     w("  - %s" % p)
                 w("")
 
+        def scan_invalid():
+            if self.invalid:
+                self.invalid.sort()
+                w("*** Packages with invalid versions")
+                w("")
+                w("The following non-official packages have invalid versions and cannot")
+                w("be classified correctly:")
+                w("")
+                for p in self.invalid:
+                    w("  - " + p)
+
         scan(fix_status=True, new_status=True)
         scan_fixed()
         scan(fix_status=True, new_status=False)
         scan(fix_status=False, new_status=True)
         scan(fix_status=False, new_status=False)
+        scan_invalid()
 
         if options.update_history:
             self._write_history(self.options.history)
@@ -679,7 +707,7 @@ def rate_system(target, options, vulns, history):
     vulns: list of vulnerabiltiies"""
     packages = PackageFile(options.status)
     re_source = re.compile\
-                (r'^([a-zA-Z0-9.+-]+)(?:\s+\(([a-zA-Z0-9.+:-]+)\))?$')
+                (r'^([a-zA-Z0-9.+-]+)(?:\s+\((\S+)\))?$')
     formatter = formatters[options.format](target, options, history)
     for pkg in packages:
         pkg_name = None
@@ -695,7 +723,7 @@ def rate_system(target, options, vulns, history):
             if name == "Status":
                 pkg_status = contents
             elif name == "Version":
-                pkg_version = Version(contents)
+                pkg_version = contents
             elif name == "Source":
                 match = re_source.match(contents)
                 if match is None:
@@ -715,12 +743,22 @@ def rate_system(target, options, vulns, history):
         if pkg_version is None:
             raise SyntaxError\
                   ("package record does not contain version information")
+        if pkg_source_version is None:
+            pkg_source_version = pkg_version
         if not pkg_source:
             pkg_source = pkg_name
-        if pkg_source_version:
+
+        try:
+            pkg_version = Version(pkg_version)
+        except ValueError:
+            formatter.invalid_version(pkg_name, pkg_version)
+            continue
+        try:
             pkg_source_version = Version(pkg_source_version)
-        else:
-            pkg_source_version = pkg_version
+        except ValueError:
+            formatter.invalid_source_version(pkg_name, pkg_source_version)
+            continue
+
         try:
             vlist = vulns[pkg_source]
         except KeyError:
