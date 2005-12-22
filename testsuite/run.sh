@@ -14,7 +14,7 @@ for testcase in [0-9][0-9][0-9] ; do
 		    --source "$url/$testcase" \
 		    --history $testcase/history \
 		    --status $testcase/status \
-		    --format $format > $testcase/out.$format
+		    --format $format > $testcase/out.$format 2>&1
 		if test $format = summary ; then
 		    sort $testcase/out.$format > $testcase/out.$format.1
 		    mv $testcase/out.$format.1 $testcase/out.$format
