@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-VERSION = "0.2"
+VERSION = "0.3"
 
 import copy
 from cStringIO import StringIO
@@ -261,13 +261,19 @@ class Vulnerability:
                         'M' : 'medium',
                         'H' : 'high'}
 
-    def __init__(self, str):
+    def __init__(self, vuln_names, str):
         """Creates a new vulnerability object from a string."""
-        (bug, flags, package, version, description) = str.split(',', 4)
-        self.bug = bug
+        (package, vnum, flags, unstable_version, other_versions) \
+                  = str.split(',', 4)
+        vnum = int(vnum)
+        self.bug = vuln_names[vnum][0]
         self.package = package
-        self.version = version
-        self.description = description
+        self.binary_packages = [package]
+        self.unstable_version = unstable_version
+        self.other_versions = other_versions.split(' ')
+        if self.other_versions == ['']:
+            self.other_versions = []
+        self.description = vuln_names[vnum][1]
         self.binary_package = flags[0] == 'B'
         self.urgency = self.urgency_conversion[flags[1]]
         self.remote = {'?' : None,
@@ -280,29 +286,38 @@ class Vulnerability:
         this vulnerability."""
         self._parse()
         if self.binary_package and bin_pkg == self.package:
-            if self.version:
-                return bin_ver < self.version
+            if self.unstable_version:
+                return bin_ver < self.unstable_version
             else:
                 return True
         elif src_pkg == self.package:
-            if self.version:
-                return src_ver < self.version
+            if self.unstable_version:
+                return src_ver < self.unstable_version \
+                       and src_ver not in self.other_versions
             else:
-                return True
+                return src_ver not in self.other_versions
+        else:
+            return False
 
-    def installed(self, name):
+    def obsolete(self, bin_name=None):
+        if bin_name is None:
+            bin_name = self.installed_package
+        return bin_name not in self.binary_packages
+
+    def installed(self, src_name, bin_name):
         """Returns a new vulnerability object for the installed package."""
         v = copy.copy(self)
-        v.installed_package = name
+        v.installed_package = bin_name
         return v
 
     def _parse(self):
         """Further parses the object."""
-        if type(self.version) == types.StringType:
-            if self.version:
-                self.version = Version(self.version)
+        if type(self.unstable_version) == types.StringType:
+            if self.unstable_version:
+                self.unstable_version = Version(self.unstable_version)
             else:
-                self.version = None
+                self.unstable_version = None
+            self.other_versions = map(Version, self.other_versions)
 
 class DebsecanOpener(urllib.FancyURLopener):
     version = "debsecan/" + VERSION
@@ -312,7 +327,7 @@ def fetch_data(options):
     url = options.source
     if not url:
         url = "http://secure-testing.debian.net/debian-secure-testing/" \
-              "project/debsecan/release/"
+              "project/debsecan/release/1/"
     elif url[-1] <> "/":
         url += "/"
     url = url + options.suite
@@ -325,19 +340,48 @@ def fetch_data(options):
         else:
             break
     data = StringIO(zlib.decompress(''.join(data)))
-    if data.readline() <> "VERSION 0\n":
+    if data.readline() <> "VERSION 1\n":
         sys.stderr.write("error: server sends data in unknown format\n")
         sys.exit(1)
+
+    vuln_names = []
+    for line in data:
+        if line[-1:] == '\n':
+            line = line[:-1]
+        if line == '':
+            break
+        (name, flags, desc) = line.split(',', 2)
+        vuln_names.append((name, desc))
 
     packages = {}
     for line in data:
         if line[-1:] == '\n':
             line = line[:-1]
-        v = Vulnerability(line)
+        if line == '':
+            break
+        v = Vulnerability(vuln_names, line)
         try:
             packages[v.package].append(v)
         except KeyError:
             packages[v.package] = [v]
+
+    source_to_binary = {}
+    for line in data:
+        if line[-1:] == '\n':
+            line = line[:-1]
+        if line == '':
+            break
+        (sp, bps) = line.split(',')
+        if bps:
+            source_to_binary[sp] = bps.split(' ')
+        else:
+            source_to_binary[sp] = []
+
+    for vs in packages.values():
+        for v in vs:
+            if not v.binary_package:
+                v.binary_packages = source_to_binary[v.package]
+
     return packages
 
 # Previous state (for incremental reporting)
@@ -457,6 +501,8 @@ class SummaryFormatter(Formatter):
             notes.append("remotely exploitable")
         if v.urgency:
             notes.append(v.urgency + " urgency")
+        if v.obsolete(bin_name):
+            notes.append('obsolete')
         notes = ', '.join(notes)
         if notes:
             self.target.write("%s %s (%s)" % (v.bug, bin_name, notes))
@@ -483,19 +529,22 @@ class DetailFormatter(Formatter):
                           % (bin_name, bin_version))
         self.target.write("             (built from %s %s)"
                           % (src_name, src_version))
+        if v.obsolete(bin_name):
+            self.target.write("             package is obsolete")
+
         if v.binary_package:
             k = 'binary'
         else:
             k = 'source'
+        if v.unstable_version:
+            self.target.write("  fixed in unstable: %s %s (%s package)"
+                              % (v.package, v.unstable_version, k))
+        for vb in v.other_versions:
+            self.target.write("  fixed on branch:   %s %s (%s package)"
+                              % (v.package, vb, k))
         if v.fix_available:
-            self.target.write("  fixed package: %s %s (%s package)"
-                              % (v.package, v.version, k))
-        elif v.version:
-            self.target.write(
-                "  fixed package: %s %s (%s package, not backported)"
-                % (v.package, v.version, k))
-        else:
-            self.target.write("  fixed package: not yet available")
+            self.target.write("  fix is available for the selected suite (%s)"
+                              % self.options.suite)
         self.target.write("")
 
 class ReportFormatter(Formatter):
@@ -530,7 +579,7 @@ class ReportFormatter(Formatter):
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
 
-        v = v.installed(bin_name)
+        v = v.installed(src_name, bin_name)
         if self.bugs.has_key(v.bug):
             self.bugs[v.bug].append(v)
         else:
@@ -607,6 +656,8 @@ class ReportFormatter(Formatter):
                         notes.append("remotely exploitable")
                     if v.urgency:
                         notes.append(v.urgency + " urgency")
+                    if v.obsolete():
+                        notes.append('obsolete')
                     notes = ', '.join(notes)
                     if notes:
                         w("  - %s (%s)" % (v.installed_package, notes))

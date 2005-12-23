@@ -1,3 +1,11 @@
+debsecan (0.3) unstable; urgency=low
+
+  * Support package pinning.
+  * When the user selected a specific suite, flag packages which have been
+    removed as obsolete.  Closes: #344241.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Fri, 23 Dec 2005 15:35:46 +0100
+
 debsecan (0.2.2) unstable; urgency=low
 
   * Add Recommends: for cron and mail-transport-agent.

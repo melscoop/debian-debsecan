@@ -15,7 +15,7 @@
 .\" along with this program; if not, write to the Free Software
 .\" Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 .\"
-.TH DEBSECAN 1 2005-12-14 "" ""
+.TH DEBSECAN 1 2005-12-23 "" ""
 .SH NAME
 debsecan \- Debian Security Analyzer
 .SH SYNOPSIS
@@ -33,17 +33,11 @@ reports vulnerabilities found on the system.
 This mandatory option tells
 .B debsecan
 which Debian suite (release) should be used.  The release code name
-has to be used ("sid"), not the temporal name ("unstable").  Due to
-the way
-.B debsecan
-works, the correct suite must be specified, otherwise the results are
-incorrect.  See
-.SM
-.B CAVEATS
-below for details.
+has to be used ("sid"), not the temporal name ("unstable").
 .TP
 .B --source \fIurl\fP
 Override the default download URL for vulnerability data.
+.TP
 .B --status \fIfile\fP
 Evaluate a different
 .B dpkg
@@ -109,25 +103,43 @@ Display a short help message and exit.
 .B --version
 Display version information and exit.
 .SH "CAVEATS"
-Versions of Debian packages which are part of different releases are
-not comparable in the sense that the comparison yields useful
-information.  For example, all packages in the stable suite have
-versions which are not greater than the version in unstable.  This is
-true even if a security update has been applied to the stable suite.
-In this case, the simple version-based algorithm used by
+Much like the official Debian security advisories,
+.BR debsecan 's
+vulnerability tracking is mostly based on source packages.  This can
+be confusing because tools like
+.B dpkg
+only display binary package names.  Therefore,
 .B debsecan
-would incorrectly flag the vulnerable package version from unstable as
-fixed when vulnerability data for the stable suite is used to rate the
-system.
+displays the more familiar binary package names.  In one important
+case, this leads to problems: if a binary package is removed from the
+archive, the correct fix is to update all its reverse dependencies and
+and remove that package.  If the correct
+.B --suite
+option is specified,
+.B debsecan
+marks affected packages as
+.BR obsolete .
 .P
-This is the reason why Debian installations which mix packages from
-multiple releases
-.B "are not supported" .
-If in doubt, specify
-.B --release sid
-when invoking
-.BR debsecan .
-This will result in some false positives, but not in false negatives.
+For certain architectures, build daemons may lag considerability.  In
+this case,
+.B debsecan
+may incorrectly mark a package as fixed, even if an update is not yet
+available in the Debian archive.
+.P
+Note that
+.B debsecan
+version uses the
+.B --suite
+option only to determine the availability of corrected packages and to
+detect obsolete packages.  If you specify the wrong suite, only the
+information on available security updates and obsolete packages is
+wrong, but the list of vulnerabilities is correct.
+.P
+Mixing packages from different Debian
+releases is supported, as long as the packages still carry their
+official version numbers.  Unknown package versions (from backported
+packages, for example) are compared to the version in Debian unstable
+only, which may lead to incorrect reports.
 .SH EXAMPLES
 This command prints all package names for which security fixes are
 available:
@@ -156,6 +168,10 @@ notifications of new security issues:
 .B --format report \e
 .IP "" 1in
 .B --update-history --mailto root
+.PP
+See
+.BR debsecan-create-cron (8)
+for a tool which creates a suitable cron entry.
 .SH AUTHOR
 .B debsecan
 was written by Florian Weimer.

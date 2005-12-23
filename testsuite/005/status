@@ -6,7 +6,7 @@ Installed-Size: 332
 Maintainer: LaMont Jones <lamont@debian.org>
 Architecture: i386
 Source: bind9
-Version: 1:9.2.4-1
+Version: 1:9.3.0-1
 Replaces: libbind0
 Depends: libc6 (>= 2.3.2.ds1-4)
 Conflicts: libbind0
