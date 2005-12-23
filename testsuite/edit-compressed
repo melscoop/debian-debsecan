@@ -13,7 +13,7 @@ try:
     tmp.write(data)
     tmp.close()
     os.system("editor " + tmp_name)
-    data = zlib.compress(file(tmp_name).read())
+    data = zlib.compress(file(tmp_name).read(), 9)
     file(input_name, "w+").write(data)
 finally:
     os.unlink(tmp_name)
