@@ -20,8 +20,6 @@
 debsecan \- Debian Security Analyzer
 .SH SYNOPSIS
 .B debsecan
-.B --suite
-.I suite
 .I options...
 .SH DESCRIPTION
 .B debsecan
@@ -30,10 +28,11 @@ reports vulnerabilities found on the system.
 .SH OPTIONS
 .TP
 .B --suite \fIcount\fP
-This mandatory option tells
+Choose a specific suite.
 .B debsecan
-which Debian suite (release) should be used.  The release code name
-has to be used ("sid"), not the temporal name ("unstable").
+produces more informative output (including obsolete packages) if the
+correct suite is specified.  The release code name has to be used
+("sid"), not the temporal name ("unstable").
 .TP
 .B --source \fIurl\fP
 Override the default download URL for vulnerability data.

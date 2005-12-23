@@ -203,7 +203,7 @@ class PackageFile:
 
 def parse_cli():
     """Reads sys.argv and returns an options object."""
-    parser = OptionParser(usage="%prog OPTIONS... --suite SUITE")
+    parser = OptionParser(usage="%prog OPTIONS...")
     parser.add_option("--suite", type="choice",
                       choices=['woody', 'sarge', 'etch', 'sid'],
                       help="set the Debian suite of this installation")
@@ -230,9 +230,6 @@ def parse_cli():
     parser.add_option("--cron", action="store_true",
                       help="debsecan is invoked from cron")
     (options, args) = parser.parse_args()
-    if options.suite is None:
-        sys.stderr.write("error: the --suite option is required\n")
-        sys.exit(1)
     if options.cron:
         options.format = 'report'
         options.update_history = True
@@ -332,7 +329,10 @@ def fetch_data(options):
               "project/debsecan/release/1/"
     elif url[-1] <> "/":
         url += "/"
-    url = url + options.suite
+    if options.suite:
+        url = url + options.suite
+    else:
+        url = url + 'GENERIC'
     u = DebsecanOpener().open(url)
     data = []
     while 1:

@@ -1,6 +1,7 @@
 debsecan (0.3) unstable; urgency=low
 
   * Support package pinning.
+  * The --suite option is no longer mandatory.
   * When the user selected a specific suite, flag packages which have been
     removed as obsolete.  Closes: #344241.
 
