@@ -622,6 +622,7 @@ class ReportFormatter(Formatter):
         blist.sort()
 
         def scan(fix_status, new_status):
+            have_obsolete = False
             first_bug = True
             for (bug, vlist) in blist:
                 first_pkg = True
@@ -657,6 +658,7 @@ class ReportFormatter(Formatter):
                     if v.urgency:
                         notes.append(v.urgency + " urgency")
                     if v.obsolete():
+                        have_obsolete = True
                         notes.append('obsolete')
                     notes = ', '.join(notes)
                     if notes:
@@ -665,6 +667,12 @@ class ReportFormatter(Formatter):
                         w("  - %s" % v.installed_package)
                 if not first_pkg:
                     w("")
+                if have_obsolete:
+                    w(
+"""Note that some packages were marked as obsolete.  To deal with the
+vulnerabilities in them, you need to remove them.  Before you ca do
+this, you may have to upgrade other packages depending on them.
+""")
 
         def scan_fixed():
             bugs = {}
