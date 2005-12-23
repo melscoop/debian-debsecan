@@ -268,7 +268,7 @@ class Vulnerability:
         vnum = int(vnum)
         self.bug = vuln_names[vnum][0]
         self.package = package
-        self.binary_packages = [package]
+        self.binary_packages = None
         self.unstable_version = unstable_version
         self.other_versions = other_versions.split(' ')
         if self.other_versions == ['']:
@@ -300,6 +300,8 @@ class Vulnerability:
             return False
 
     def obsolete(self, bin_name=None):
+        if self.binary_packages is None:
+            return
         if bin_name is None:
             bin_name = self.installed_package
         return bin_name not in self.binary_packages
@@ -380,7 +382,7 @@ def fetch_data(options):
     for vs in packages.values():
         for v in vs:
             if not v.binary_package:
-                v.binary_packages = source_to_binary[v.package]
+                v.binary_packages = source_to_binary.get(v.package, None)
 
     return packages
 
