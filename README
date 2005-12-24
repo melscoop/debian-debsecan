@@ -24,9 +24,4 @@ A web interface to the database is available at:
 WARNING: debsecan is still a bit experimental.  As usual, use it at
 your own risk.
 
-Known issues
-------------
-
-Removed packages result in confusing reports (see test case 005).
-
- -- Florian Weimer <fw@deneb.enyo.de>, Mon Dec 19 20:37:36 2005
+ -- Florian Weimer <fw@deneb.enyo.de>, Sat Dec 24 19:37:10 2005
