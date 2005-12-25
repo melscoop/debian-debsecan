@@ -1,3 +1,9 @@
+debsecan (0.3.1) unstable; urgency=low
+
+  * Remove duplicate explanations regarding obsolete packages.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sun, 25 Dec 2005 18:12:25 +0100
+
 debsecan (0.3) unstable; urgency=low
 
   * Support package pinning.

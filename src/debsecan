@@ -669,8 +669,9 @@ class ReportFormatter(Formatter):
                         w("  - %s" % v.installed_package)
                 if not first_pkg:
                     w("")
-                if have_obsolete:
-                    w(
+
+            if have_obsolete:
+                w(
 """Note that some packages were marked as obsolete.  To deal with the
 vulnerabilities in them, you need to remove them.  Before you ca do
 this, you may have to upgrade other packages depending on them.
