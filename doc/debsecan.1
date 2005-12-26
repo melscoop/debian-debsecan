@@ -78,7 +78,9 @@ output format.
 Only list vulnerabilities for which a fix is available in the archive.
 Note that it can happen that a fix is listed, although the package has
 not been built for the system's architecture and is not yet available
-for download.
+for download.  (If you use this option, you also must specify the
+correct suite using
+.BR --suite .)
 .TP
 .B --history \fIfile\fP
 Change the name of the history file used by

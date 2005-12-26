@@ -236,6 +236,9 @@ def parse_cli():
         if not options.mailto:
             sys.stderr.write("error: --cron option requires --mailto\n")
             sys.exit(1)
+    if options.only_fixed and not options.suite:
+        sys.stderr.write("error: --only-fixed requires --suite\n")
+        sys.exit(1)
     if options.update_history and options.format <> 'report':
         sys.stderr.write("error: --update-history requires report format\n")
         sys.exit(1)
