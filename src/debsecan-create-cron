@@ -22,8 +22,12 @@ if test -z "$1" ; then
 fi
 
 if test -e "$FILE" ; then
-    echo "error: cron file $FILE already exists"
-    exit 1
+    if grep '^# AUTOMATICALLY GENERATED$' "$FILE" > /dev/null ; then
+	:
+    else
+	echo "error: cron file $FILE already exists"
+	exit 1
+    fi
 fi
 
 MIN=$(($RANDOM % 60))
@@ -39,5 +43,5 @@ $MIN * * * * daemon /usr/bin/debsecan --suite $1 --mailto root --cron
 # once per day.)
 EOF
 
-echo "$0: cron file $FILE created."
+echo "$0: cron file $FILE updated."
 exit 0
