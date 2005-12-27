@@ -21,6 +21,19 @@ if test -z "$1" ; then
     usage
 fi
 
+case "$1" in
+    --generic)
+	suite=""
+	;;
+    -*)
+	echo "error: illegal suite name '$1'"
+	exit 1
+	;;
+    *)
+	suite="--suite $1"
+	;;
+esac
+
 if test -e "$FILE" ; then
     if grep '^# AUTOMATICALLY GENERATED$' "$FILE" > /dev/null ; then
 	:
@@ -38,7 +51,7 @@ cat > "$FILE" <<EOF
 # AUTOMATICALLY GENERATED
 # (Delete the preceding line if you edit this file.)
 
-$MIN * * * * daemon /usr/bin/debsecan --suite $1 --mailto root --cron
+$MIN * * * * daemon /usr/bin/debsecan $suite --mailto root --cron
 # (Note: debsecan delays actual processing past 2:00 AM, and runs only
 # once per day.)
 EOF

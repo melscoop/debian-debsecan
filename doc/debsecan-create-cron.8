@@ -21,6 +21,8 @@ debsecan-create-cron \- Create cron entry for the Debian Security Analyzer
 .SH SYNOPSIS
 .B debsecan-create-cron
 .I suite
+.br
+.B debsecan-create-cron --generic
 .SH DESCRIPTION
 .B debsecan-create-cron
 creates a cron entry for
@@ -32,6 +34,21 @@ running.  The cron entry runs hourly, but
 .B debsecan
 itself restricts actually processing to once a day.  The minute the
 cron job runs is selected randomly, to reduce peak server load.
+.P
+.B debsecan-create-cron --generic
+creates a generic cron entry which is does not include a suite
+argument.  (This is only used to initialize
+.B debsecan
+without user interaction; you should specifiy the correct suite when
+invoking
+.B debsecan-create-cron
+manually, so that
+.BR debsecan 's
+output will contain additional information.)
+.P
+If the cron entry is no longer marked as automatically generated,
+.B debsecan-create-cron
+will refuse to overwrite it.
 .SH AUTHOR
 .B debsecan
 was written by Florian Weimer.
