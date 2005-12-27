@@ -623,7 +623,15 @@ class ReportFormatter(Formatter):
             return
 
         w = self.target.write
-        w("Security report based on the %s release " % self.options.suite)
+        if self.options.suite:
+            w("Security report based on the %s release " % self.options.suite)
+        else:
+            w("Security report based on general data")
+            w("")
+            w(
+"""If you specify a proper suite, this report will include information
+regarding available security updates and obsolete packages.  See the
+debsecan-create-cron(8) manual page for details.""")
         w("")
 
         for vlist in self.bugs.values():
