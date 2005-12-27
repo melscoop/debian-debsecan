@@ -245,9 +245,6 @@ def parse_cli():
     if options.mailto and options.format <> 'report':
         sys.stderr.write("error: --mailto requires report format\n")
         sys.exit(1)
-    if options.format == 'report' and options.only_fixed:
-        sys.stderr.write("error: --only-fixed conflicts with report format\n")
-        sys.exit(1)
     options.need_history = options.format == 'report'
     return options
 
@@ -458,7 +455,7 @@ class Formatter:
     def __init__(self, target, options, history):
         self.target = target
         self.options = options
-        pass
+        self.history = history
     def invalid_version(self, package, version):
         sys.stdout.flush()
         sys.stderr.write("invalid version %s of package %s\n"
@@ -469,12 +466,18 @@ class Formatter:
         sys.stderr.write("invalid source version %s of package %s\n"
                          % (version, package))
         sys.stderr.flush()
+    def maybe_record(self, v, bp, sp):
+        """Invoke self.record, honouring --only-fixed.  Can be
+        overridden to implement a different form of --only-fixed
+        processing."""
+        if not (self.options.only_fixed and not v.fix_available):
+            self.record(v, bp, sp)
     def finish(self):
         pass
 
 class BugFormatter(Formatter):
     def __init__(self, target, options, history):
-        self.target = target
+        Formatter.__init__(self, target, options, history)
         self.bugs = {}
     def record(self, v, bp, sp):
         self.bugs[v.bug] = 1
@@ -486,7 +489,7 @@ class BugFormatter(Formatter):
 
 class PackageFormatter(Formatter):
     def __init__(self, target, options, history):
-        self.target = target
+        Formatter.__init__(self, target, options, history)
         self.packages = {}
     def record(self, v, (bin_name, bin_version), sp):
         self.packages[bin_name] = 1
@@ -554,10 +557,8 @@ class DetailFormatter(Formatter):
 
 class ReportFormatter(Formatter):
     def __init__(self, target, options, history):
-        self.target = target
+        Formatter.__init__(self, target, options, history)
         self.bugs = {}
-        self.options = options
-        self.history = history
         self.invalid = []
 
         # self.record will put new package status information here.
@@ -580,6 +581,11 @@ class ReportFormatter(Formatter):
             f.write("%s,%s,%s\n" % (bug, package, fixed))
         f.close()
         os.rename(new_name, name)
+
+    def maybe_record(self, v, bp, sp):
+        # --only-fixed processing happens in self.finish, and we need
+        # all records to detect changes properly.
+        self.record(v, bp, sp)
 
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
@@ -716,8 +722,9 @@ this, you may have to upgrade other packages depending on them.
         scan(fix_status=True, new_status=True)
         scan_fixed()
         scan(fix_status=True, new_status=False)
-        scan(fix_status=False, new_status=True)
-        scan(fix_status=False, new_status=False)
+        if not self.options.only_fixed:
+            scan(fix_status=False, new_status=True)
+            scan(fix_status=False, new_status=False)
         scan_invalid()
 
         if options.update_history:
@@ -835,9 +842,7 @@ def rate_system(target, options, vulns, history):
             bp = (pkg_name, pkg_version)
             sp = (pkg_source, pkg_source_version)
             if v.is_vulnerable (bp, sp):
-                if options.only_fixed and not v.fix_available:
-                    continue
-                formatter.record(v, bp, sp)
+                formatter.maybe_record(v, bp, sp)
     formatter.finish()
     target.finish()
 
