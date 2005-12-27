@@ -657,7 +657,13 @@ class ReportFormatter(Formatter):
                             if new_status:
                                 w("*** New vulnerabilities")
                             else:
-                                w("*** Vulnerabilities without updates")
+                                if self.options.suite:
+                                    w("*** Vulnerabilities without updates")
+                                else:
+                                    # If no suite has been specified,
+                                    # all vulnerabilities lack
+                                    # updates, technically speaking.
+                                    w("*** Vulnerabilities")
                         w("")
                         first_bug = False
                     if first_pkg:
