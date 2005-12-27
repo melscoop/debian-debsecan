@@ -111,18 +111,26 @@ be confusing because tools like
 .B dpkg
 only display binary package names.  Therefore,
 .B debsecan
-displays the more familiar binary package names.  In one important
-case, this leads to problems: if a binary package is removed from the
-archive, the correct fix is to update all its reverse dependencies and
-and remove that package.  If the correct
+displays the more familiar binary package names.  This has the
+unfortunate effect that all binary packages (including packages
+containing only documentation, for example) are flagged as vulnerable,
+and not only those packages which actually contain the vulnerable
+code.
+.P
+If
+the correct
 .B --suite
 option is specified,
 .B debsecan
-marks affected packages as
+may mark some packages as
 .BR obsolete .
+This means that thebinary package in question has been removed from
+the archive.  In this case, you need to update all the packages
+depending on the obsolete package, and subsequently remove the
+obsolete pacakge.
 .P
-For certain architectures, build daemons may lag considerability.  In
-this case,
+For certain architectures, build daemons may lag considerably.  In
+such case,
 .B debsecan
 may incorrectly mark a package as fixed, even if an update is not yet
 available in the Debian archive.
