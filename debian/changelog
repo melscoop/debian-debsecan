@@ -2,8 +2,9 @@ debsecan (0.3.2) unstable; urgency=low
 
   * Fix typo in obsolete packages message.  Closes: #344778.
   * --format report and --only-fixed no longer conflict.
+  * Add debconf configuration.
 
- -- Florian Weimer <fw@deneb.enyo.de>  Tue, 27 Dec 2005 12:51:53 +0100
+ -- Florian Weimer <fw@deneb.enyo.de>  Tue, 27 Dec 2005 14:23:03 +0100
 
 debsecan (0.3.1) unstable; urgency=low
 

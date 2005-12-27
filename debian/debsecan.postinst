@@ -2,6 +2,8 @@
 
 set -e
 
+. /usr/share/debconf/confmodule
+
 case "$1" in
     configure)
 	# fix permissions on upgrade, will also run for fresh
@@ -12,6 +14,20 @@ case "$1" in
 		chown daemon:daemon /var/lib/debsecan/history
 	    fi
 	    rm -f /var/lib/debsecan/history.new
+	fi
+
+	if /usr/sbin/debsecan-create-cron --check ; then
+	    db_get debsecan/report
+	    if test "$RET" = true ; then
+		db_get debsecan/suite
+		if test "$RET" = "GENERIC" ; then
+		    /usr/sbin/debsecan-create-cron --generic > /dev/null
+		else
+		    /usr/sbin/debsecan-create-cron --suite "$RET" > /dev/null
+		fi
+	    else
+		rm -f /etc/cron.d/debsecan
+	    fi
 	fi
 	;;
 esac

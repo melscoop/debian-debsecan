@@ -21,9 +21,26 @@ if test -z "$1" ; then
     usage
 fi
 
+if test -e "$FILE" ; then
+    if grep '^# AUTOMATICALLY GENERATED$' "$FILE" > /dev/null ; then
+	may_overwrite=true
+    else
+	may_overwrite=false
+    fi
+else
+    may_overwrite=true
+fi
+
 case "$1" in
     --generic)
 	suite=""
+	;;
+    --check)
+	if $may_overwrite ; then
+	    exit 0
+	else
+	    exit 1
+	fi
 	;;
     -*)
 	echo "error: illegal suite name '$1'"
@@ -34,13 +51,11 @@ case "$1" in
 	;;
 esac
 
-if test -e "$FILE" ; then
-    if grep '^# AUTOMATICALLY GENERATED$' "$FILE" > /dev/null ; then
-	:
-    else
-	echo "error: cron file $FILE already exists"
-	exit 1
-    fi
+if $may_overwrite ; then
+    :
+else
+    echo "error: $FILE already exists"
+    exit 1
 fi
 
 MIN=$(($RANDOM % 60))

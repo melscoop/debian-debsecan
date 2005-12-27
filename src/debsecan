@@ -630,8 +630,8 @@ class ReportFormatter(Formatter):
             w("")
             w(
 """If you specify a proper suite, this report will include information
-regarding available security updates and obsolete packages.  See the
-debsecan-create-cron(8) manual page for details.""")
+regarding available security updates and obsolete packages.  To set
+the correct suite, run "dpkg-reconfigure debsecan" as root.""")
         w("")
 
         for vlist in self.bugs.values():
