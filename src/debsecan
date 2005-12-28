@@ -625,7 +625,7 @@ class ReportFormatter(Formatter):
 
         w = self.target.write
         if self.options.suite:
-            w("Security report based on the %s release " % self.options.suite)
+            w("Security report based on the %s release" % self.options.suite)
         else:
             w("Security report based on general data")
             w("")
