@@ -641,6 +641,8 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
         blist = self.bugs.items()
         blist.sort()
 
+        self._bug_found = False
+
         def scan(fix_status, new_status):
             have_obsolete = False
             first_bug = True
@@ -678,6 +680,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                     if first_pkg:
                         w("%s %s" % (v.bug, v.description))
                         first_pkg = False
+                        self._bug_found = True
                     notes = []
                     if v.remote:
                         notes.append("remotely exploitable")
@@ -717,6 +720,7 @@ this, you may have to upgrade other packages depending on them.
                     w("*** Fixed vulnerabilities")
                     w("")
                     first_bug = False
+                    self._bug_found = True
                 w(bug)
                 bugs[bug].sort()
                 for p in bugs[bug]:
@@ -725,6 +729,7 @@ this, you may have to upgrade other packages depending on them.
 
         def scan_invalid():
             if self.invalid:
+                self._bug_found = True
                 self.invalid.sort()
                 w("*** Packages with invalid versions")
                 w("")
@@ -741,6 +746,14 @@ this, you may have to upgrade other packages depending on them.
             scan(fix_status=False, new_status=True)
             scan(fix_status=False, new_status=False)
         scan_invalid()
+
+        if not self._bug_found:
+            if self.options.only_fixed:
+                w(
+"""No known vulnerabilities for which updates are available were found
+on the system.""")
+            else:
+                w("No known vulnerabilities were found on the system.")
 
         if options.update_history:
             self._write_history(self.options.history)
