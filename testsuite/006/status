@@ -1,3 +1,17 @@
+Package: nerolinux
+Status: install ok installed
+Priority: optional
+Section: unknown
+Maintainer: Nero AG
+Architecture: i386
+Version: 2.0.0.4-2
+Depends: libc6 (>= 2.2.4-4), libglib1.2 (>= 1.2.0), libgtk1.2 (>= 1.2.10-4), xlibs (>= 4.1.0)
+Description: NeroLINUX CD/DVD Burning Software
+ Copyright: Nero AG
+ 
+ NeroLINUX uses Nero 6.6's embedded API to bring Nero's powerful CD/DVD-writer
+ functions to the Linux Desktop.
+
 Package: ethereal
 Status: install ok installed
 Priority: optional

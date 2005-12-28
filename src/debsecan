@@ -141,7 +141,6 @@ class PackageFile:
     Packages files."""
 
     re_field = re.compile(r'^([A-Za-z][A-Za-z0-9-]+):(?:\s+(.*?))?\s*$')
-    re_continuation = re.compile(r'^\s+(?:\.|(\S.*?)\s*)$')
 
     def __init__(self, name, fileObj=None):
         """Creates a new package file object.
@@ -172,18 +171,20 @@ class PackageFile:
 
             match = self.re_field.match(line)
             if not match:
-                self.raiseSyntaxError("expected package field")
+                self.raiseSyntaxError("expected package field, got " + `line`)
             (name, contents) = match.groups()
             contents = contents or ''
 
             while True:
                 line = self.file.readline()
                 self.lineno += 1
-                match = self.re_continuation.match(line)
-                if match:
-                    (ncontents,) = match.groups()
-                    if ncontents is None:
-                        ncontents = ""
+                if line and line[0] in " \t":
+                    ncontents = line[1:]
+                    if ncontents:
+                        if ncontents[-1] == '\n':
+                            ncontents = ncontents[:-1]
+                    else:
+                        break
                     contents = "%s\n%s" % (contents, ncontents)
                 else:
                     break
