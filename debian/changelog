@@ -1,3 +1,9 @@
+debsecan (0.3.3) unstable; urgency=low
+
+  * Fix syntax error in config script.  Closes: 344976.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Wed, 28 Dec 2005 09:52:53 +0100
+
 debsecan (0.3.2) unstable; urgency=low
 
   * Fix typo in obsolete packages message.  Closes: #344778.
