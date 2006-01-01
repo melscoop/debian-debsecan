@@ -27,7 +27,7 @@ import socket
 import sys
 import time
 import types
-import urllib
+import urllib2
 import zlib
 
 ######################################################################
@@ -319,9 +319,6 @@ class Vulnerability:
                 self.unstable_version = None
             self.other_versions = map(Version, self.other_versions)
 
-class DebsecanOpener(urllib.FancyURLopener):
-    version = "debsecan/" + VERSION
-
 def fetch_data(options):
     """Returns a dictionary PACKAGE -> LIST-OF-VULNERABILITIES."""
     url = options.source
@@ -334,7 +331,13 @@ def fetch_data(options):
         url = url + options.suite
     else:
         url = url + 'GENERIC'
-    u = DebsecanOpener().open(url)
+    r = urllib2.Request(url)
+    r.add_header('User-Agent', 'debsecan/' + VERSION)
+    try:
+        u = urllib2.urlopen(r)
+    except urllib2.HTTPError, e:
+        sys.stderr.write("error: while downloading %s:\n%s\n" % (url, e))
+        sys.exit(1)
     data = []
     while 1:
         d = u.read(4096)
