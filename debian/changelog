@@ -2,6 +2,7 @@ debsecan (0.3.4) unstable; urgency=low
 
   * Switch to urllib2, which handles HTTP errors in a better way.
     Closes: #345308.
+  * Add --no-obsolete option.
 
  -- Florian Weimer <fw@deneb.enyo.de>  Sun,  1 Jan 2006 13:50:24 +0100
 

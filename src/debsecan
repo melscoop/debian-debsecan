@@ -220,6 +220,8 @@ def parse_cli():
                       help="change output format")
     parser.add_option("--only-fixed", action="store_true", dest="only_fixed",
                 help="list only vulnerabilities for which a fix is available")
+    parser.add_option("--no-obsolete", action="store_true", dest="no_obsolete",
+                help="do not list obsolete packages (not recommend)")
     parser.add_option("--history", default="/var/lib/debsecan/history",
                       metavar="NAME",
                       help="sets the file name of debsecan's internal status "
@@ -239,6 +241,9 @@ def parse_cli():
             sys.exit(1)
     if options.only_fixed and not options.suite:
         sys.stderr.write("error: --only-fixed requires --suite\n")
+        sys.exit(1)
+    if options.no_obsolete and not options.suite:
+        sys.stderr.write("error: --no-obsolete requires --suite\n")
         sys.exit(1)
     if options.update_history and options.format <> 'report':
         sys.stderr.write("error: --update-history requires report format\n")
@@ -480,6 +485,8 @@ class Formatter:
         overridden to implement a different form of --only-fixed
         processing."""
         if not (self.options.only_fixed and not v.fix_available):
+            if self.options.no_obsolete and v.obsolete(bp[0]):
+                return
             self.record(v, bp, sp)
     def finish(self):
         pass
@@ -695,6 +702,8 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                     if v.urgency:
                         notes.append(v.urgency + " urgency")
                     if v.obsolete():
+                        if self.options.no_obsolete:
+                            continue
                         have_obsolete = True
                         notes.append('obsolete')
                     notes = ', '.join(notes)

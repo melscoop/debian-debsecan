@@ -82,6 +82,11 @@ for download.  (If you use this option, you also must specify the
 correct suite using
 .BR --suite .)
 .TP
+.B --no-obsolete
+Do not list any obsolete packages (see below).  Using this option is
+not recommended because it hides real vulnerabilities on some systems,
+not just false positives.
+.TP
 .B --history \fIfile\fP
 Change the name of the history file used by
 .BR "--format report" .
