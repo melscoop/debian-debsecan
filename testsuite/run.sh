@@ -10,7 +10,13 @@ for testcase in [0-9][0-9][0-9] ; do
     for format in summary packages bugs detail report ; do
 	for suite in sid ; do
 	    if test -e $testcase/$suite ; then
-		if python ../src/debsecan --suite $suite \
+		if test -e $testcase/options ; then
+		    options="$(cat $testcase/options)"
+		else
+		    options=""
+		fi
+		if python ../src/debsecan $options \
+		    --suite $suite \
 		    --source "$url/$testcase" \
 		    --history $testcase/history \
 		    --status $testcase/status \
