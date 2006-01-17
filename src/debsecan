@@ -946,9 +946,9 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                             pkg = v.installed_package
                             # Wrap the package list if the line length
                             # is exceeded.
-                            if len(line) + len(pkg) + 2 \
+                            if len(line) + len(pkg) + 3 \
                                    > self.options.line_length:
-                                w(line)
+                                w(line + ',')
                                 line = indent + pkg
                                 comma_needed = True
                             else:
