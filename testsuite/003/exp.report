@@ -54,11 +54,11 @@ CVE-2005-3249
 
 *** Vulnerabilities without updates
 
-CVE-2005-3313 The IRC protocol dissector in Ethereal 0.10.13 allows remote attackers ...
+CVE-2005-3313 The IRC protocol dissector in Ethereal 0.10.13 allows...
   - ethereal, ethereal-common, tethereal
     (remotely exploitable, medium urgency)
 
-CVE-2005-3651 Stack-based buffer overflow in the dissect_ospf_v3_address_prefix ...
+CVE-2005-3651 Stack-based buffer overflow in the...
   - ethereal, ethereal-common, tethereal
     (remotely exploitable, medium urgency)
 

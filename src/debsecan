@@ -243,6 +243,9 @@ def parse_cli():
                       metavar="NAME",
                       help="sets the file name of debsecan's internal status "
                       + "file")
+    parser.add_option("--line-length", default=72, type="int",
+                      dest="line_length",
+                      help="maximum line length in report mode")
     parser.add_option("--update-history", action="store_true",
                       dest="update_history",
                       help="update the history file after reporting")
@@ -618,9 +621,6 @@ class ReportFormatter(Formatter):
         # Fixed bugs are deleted from self.fixed_bugs by self.record.
         self.fixed_bugs = self.history.data()
 
-        # Line length limit, used for wrapping package lists.
-        self.line_length = 72
-
     def _write_history(self, name):
         """Writes self.new_history to the named history file.
         The file is replaced atomically."""
@@ -733,6 +733,22 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                 notes.append('obsolete')
             return (-notes_score, ', '.join(notes))
 
+        def truncate(line):
+            if len(line) <= self.options.line_length:
+                return line
+            result = []
+            length = 0
+            max_length = self.options.line_length - 3
+            for c in line.split(' '):
+                l = len(c)
+                new_length = length + l + 1
+                if new_length < max_length:
+                    result.append(c)
+                    length = new_length
+                else:
+                    return ' '.join(result) + '...'
+            return ' '.join(result)     # should not be reachedg
+
         def scan(fix_status, new_status):
             have_obsolete = False
             first_bug = True
@@ -770,7 +786,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                     notes.sort()
                     # any v will do, because we've aggregated by v.bug
                     v = pkg_vulns[notes[0]][0]
-                    w("%s %s" % (v.bug, v.description))
+                    w(truncate("%s %s" % (v.bug, v.description)))
 
                     for note in notes:
                         note_text = note[1]
@@ -780,7 +796,8 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                             pkg = v.installed_package
                             # Wrap the package list if the line length
                             # is exceeded.
-                            if len(line) + len(pkg) + 2 > self.line_length:
+                            if len(line) + len(pkg) + 2 \
+                                   > self.options.line_length:
                                 w(line)
                                 line = indent + pkg
                                 comma_needed = True
@@ -791,7 +808,8 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                                     comma_needed = True
                                 line += pkg
                         if note_text:
-                            if len(line) + len(note_text) + 3 > self.line_length:
+                            if len(line) + len(note_text) + 3 \
+                                   > self.options.line_length:
                                 w(line)
                                 w("%s(%s)" % (indent, note_text))
                             else:
