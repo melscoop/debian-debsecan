@@ -1,4 +1,4 @@
-debsecan (0.3.5) unstable; urgency=low
+debsecan (0.4.0) unstable; urgency=low
 
   * In report mode, aggregate similar packages into lists.  Suggested by
     Moritz Muehlenhoff.
@@ -9,7 +9,7 @@ debsecan (0.3.5) unstable; urgency=low
     bug.  Closes: #346191.
   * Add whitelisting support.  Closes: #345920.
 
- -- Florian Weimer <fw@deneb.enyo.de>  Tue, 17 Jan 2006 15:54:04 +0100
+ -- Florian Weimer <fw@deneb.enyo.de>  Tue, 17 Jan 2006 19:21:52 +0100
 
 debsecan (0.3.4) unstable; urgency=low
 
