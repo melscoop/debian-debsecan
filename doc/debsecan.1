@@ -34,6 +34,14 @@ produces more informative output (including obsolete packages) if the
 correct suite is specified.  The release code name has to be used
 ("sid"), not the temporal name ("unstable").
 .TP
+.B --whitelist \fIfile\fP
+Change the name of the whitelist file.
+.TP
+.BR --add-whitelist ", " --remove-whitelist
+Add or remove entries from the whitelist.  See the
+.SM "CHANGING THE WHITELIST"
+section below.
+.TP
 .B --source \fIurl\fP
 Override the default download URL for vulnerability data.
 .TP
@@ -111,6 +119,40 @@ Display a short help message and exit.
 .TP
 .B --version
 Display version information and exit.
+.SH "CHANGING THE WHITELIST"
+You can use the
+.B --add-whitelist
+and
+.B --remove-whitelist
+options to change the whitelist.  Whitelisted vulnerabilities are not
+included in the reports.  For example,
+.IP
+.B debsecan --add-whitelist CVE-2005-4601
+.PP
+ignores the vulnerability CVE-2005-4601 completely, while
+.IP
+.B debsecan --add-whitelist CVE-2005-4601 perlmagick
+.PP
+ignores it only as far as the perlmagick is concerned.  To remove all
+whitelist entries for the CVE-2005-4601 vulnerability, use:
+.IP
+.B debsecan --remove-whitelist CVE-2005-4601
+.PP
+If you want to remove an entry for a specific vulnerability/package
+pair, list the package name explicitly, as in:
+.IP
+.B debsecan --remove-whitelist CVE-2005-4601 imagemagick
+.PP
+You can list multiple vulnerability and packages.  For example,
+.IP
+.PD 0
+.B debsecan --add-whitelist CVE-2005-4601 \e
+.IP "" 1in
+.B CVE-2006-0082 imagemagick perlmagick
+.PD
+.PP
+whitelists CVE-2005-4601 for all packages, and CVE-2006-0082 for the
+imagemagick and perlmagick packages only.
 .SH "CAVEATS"
 Much like the official Debian security advisories,
 .BR debsecan 's

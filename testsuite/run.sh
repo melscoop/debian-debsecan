@@ -5,6 +5,7 @@ set -e
 export LC_ALL=C
 
 url="file://$(pwd)"
+debsecan="python ../src/debsecan"
 
 # Check that python-apt is installed.
 python -c "import apt_pkg"
@@ -18,7 +19,13 @@ for testcase in [0-9][0-9][0-9] ; do
 		else
 		    options=""
 		fi
-		if python ../src/debsecan $options \
+		if test -e $testcase/whitelist ; then
+		    options="$options --whitelist $testcase/whitelist"
+		else
+		    options="$options --whitelist ''"
+		fi
+
+		if $debsecan $options \
 		    --suite $suite \
 		    --source "$url/$testcase" \
 		    --history $testcase/history \
@@ -38,3 +45,59 @@ for testcase in [0-9][0-9][0-9] ; do
 	done
     done
 done
+
+# Test the whitelist editing functionality.
+
+rm -f whitelist.test
+$debsecan --whitelist whitelist.test --add-whitelist CAN-2006-0001
+cat > whitelist.exp <<EOF
+VERSION 0
+CAN-2006-0001,
+EOF
+diff -u whitelist.test whitelist.exp
+
+$debsecan --whitelist whitelist.test --add-whitelist CAN-2006-0001 CAN-2006-0002
+cat > whitelist.exp <<EOF
+VERSION 0
+CAN-2006-0001,
+CAN-2006-0002,
+EOF
+diff -u whitelist.test whitelist.exp
+
+$debsecan --whitelist whitelist.test --add-whitelist CAN-2006-0001 pkg1 CAN-2006-0003 pkg2 pkg3
+cat > whitelist.exp <<EOF
+VERSION 0
+CAN-2006-0001,
+CAN-2006-0002,
+CAN-2006-0001,pkg1
+CAN-2006-0003,pkg2
+CAN-2006-0003,pkg3
+EOF
+diff -u whitelist.test whitelist.exp
+
+$debsecan --whitelist whitelist.test --remove-whitelist CAN-2006-0003 pkg2
+cat > whitelist.exp <<EOF
+VERSION 0
+CAN-2006-0001,
+CAN-2006-0002,
+CAN-2006-0001,pkg1
+CAN-2006-0003,pkg3
+EOF
+diff -u whitelist.test whitelist.exp
+
+$debsecan --whitelist whitelist.test --remove-whitelist CAN-2006-0003 pkg4
+cat > whitelist.exp <<EOF
+VERSION 0
+CAN-2006-0001,
+CAN-2006-0002,
+CAN-2006-0001,pkg1
+CAN-2006-0003,pkg3
+EOF
+diff -u whitelist.test whitelist.exp
+
+$debsecan --whitelist whitelist.test --remove-whitelist CAN-2006-0003 CAN-2006-0001
+cat > whitelist.exp <<EOF
+VERSION 0
+CAN-2006-0002,
+EOF
+diff -u whitelist.test whitelist.exp
