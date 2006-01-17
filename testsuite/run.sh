@@ -6,6 +6,9 @@ export LC_ALL=C
 
 url="file://$(pwd)"
 
+# Check that python-apt is installed.
+python -c "import apt_pkg"
+
 for testcase in [0-9][0-9][0-9] ; do
     for format in summary packages bugs detail report ; do
 	for suite in sid ; do

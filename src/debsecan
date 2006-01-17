@@ -134,6 +134,23 @@ class Version:
             l.append(d)
         return l
 
+class VersionAPT:
+    """Version class which uses the original APT comparison algorithm."""
+    def __init__(self, version):
+        """Creates a new Version object."""
+        assert type(version) == types.StringType, `version`
+        assert version <> ""
+        self.__asString = version
+
+    def __str__(self):
+        return self.__asString
+
+    def __repr__(self):
+        return 'Version(%s)' % `self.__asString`
+
+    def __cmp__(self, other):
+        return apt_pkg.VersionCompare(self.__asString, other.__asString)
+
 class PackageFile:
     """A Debian package file.
 
@@ -232,6 +249,7 @@ def parse_cli():
     parser.add_option("--mailto", help="send report to an email address")
     parser.add_option("--cron", action="store_true",
                       help="debsecan is invoked from cron")
+    parser.add_option("--no-apt", action="store_true", dest="no_apt")
     (options, args) = parser.parse_args()
     if options.cron:
         options.format = 'report'
@@ -252,6 +270,14 @@ def parse_cli():
         sys.stderr.write("error: --mailto requires report format\n")
         sys.exit(1)
     options.need_history = options.format == 'report'
+    if not options.no_apt:
+        try:
+            global apt_pkg, Version
+            import apt_pkg
+            apt_pkg.init()
+            Version = VersionAPT
+        except ImportError:
+            options.no_apt = True
     return options
 
 # Vulnerabilities
@@ -470,15 +496,24 @@ class Formatter:
         self.target = target
         self.options = options
         self.history = history
+        self._invalid_versions = False
     def invalid_version(self, package, version):
         sys.stdout.flush()
-        sys.stderr.write("invalid version %s of package %s\n"
+        sys.stderr.write("error: invalid version %s of package %s\n"
                          % (version, package))
+        if not self._invalid_versions:
+            sys.stderr.write(
+    "error: install the python-apt package for invalid versions support\n")
+            self._invalid_versions = True
         sys.stderr.flush()
     def invalid_source_version(self, package, version):
         sys.stdout.flush()
-        sys.stderr.write("invalid source version %s of package %s\n"
+        sys.stderr.write("error: invalid source version %s of package %s\n"
                          % (version, package))
+        if not self._invalid_versions:
+            sys.stderr.write(
+    "error: install the python-apt package for invalid versions support\n")
+            self._invalid_versions = True
         sys.stderr.flush()
     def maybe_record(self, v, bp, sp):
         """Invoke self.record, honouring --only-fixed.  Can be

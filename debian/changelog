@@ -2,6 +2,8 @@ debsecan (0.3.5) unstable; urgency=low
 
   * In report mode, aggregate similar packages into lists.  Suggested by
     Moritz Muehlenhoff.
+  * Use python-apt if it is available, which allows us to deal with
+    versions which do not conform to policy.  Closes: #346179.
 
  -- Florian Weimer <fw@deneb.enyo.de>  Tue, 17 Jan 2006 15:54:04 +0100
 
