@@ -3,6 +3,5 @@ Security report based on the sid release
 *** Vulnerabilities without updates
 
 CVE-2004-0175 Directory traversal vulnerability in scp for OpenSSH before 3.4p1 ...
-  - openssh-server (remotely exploitable)
-  - openssh-client (remotely exploitable)
+  - openssh-server, openssh-client (remotely exploitable)
 

@@ -1,3 +1,10 @@
+debsecan (0.3.5) unstable; urgency=low
+
+  * In report mode, aggregate similar packages into lists.  Suggested by
+    Moritz Muehlenhoff.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Tue, 17 Jan 2006 15:54:04 +0100
+
 debsecan (0.3.4) unstable; urgency=low
 
   * Switch to urllib2, which handles HTTP errors in a better way.
