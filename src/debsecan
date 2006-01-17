@@ -658,6 +658,25 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
 
         self._bug_found = False
 
+        def print_headline(fix_status, new_status):
+            if fix_status:
+                if new_status:
+                    w("*** New security updates")
+                else:
+                    w("*** Available security updates")
+            else:
+                if new_status:
+                    w("*** New vulnerabilities")
+                else:
+                    if self.options.suite:
+                        w("*** Vulnerabilities without updates")
+                    else:
+                        # If no suite has been specified, all
+                        # vulnerabilities lack updates, technically
+                        # speaking.
+                        w("*** Vulnerabilities")
+            w("")
+
         def scan(fix_status, new_status):
             have_obsolete = False
             first_bug = True
@@ -674,23 +693,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                         continue
 
                     if first_bug:
-                        if fix_status:
-                            if new_status:
-                                w("*** New security updates")
-                            else:
-                                w("*** Available security updates")
-                        else:
-                            if new_status:
-                                w("*** New vulnerabilities")
-                            else:
-                                if self.options.suite:
-                                    w("*** Vulnerabilities without updates")
-                                else:
-                                    # If no suite has been specified,
-                                    # all vulnerabilities lack
-                                    # updates, technically speaking.
-                                    w("*** Vulnerabilities")
-                        w("")
+                        print_headline(fix_status, new_status)
                         first_bug = False
                     if first_pkg:
                         w("%s %s" % (v.bug, v.description))
