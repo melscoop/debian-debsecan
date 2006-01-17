@@ -749,6 +749,9 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                     return ' '.join(result) + '...'
             return ' '.join(result)     # should not be reachedg
 
+        def write_url(bug):
+            w("  <http://idssi.enyo.de/tracker/%s>" % bug)
+
         def scan(fix_status, new_status):
             have_obsolete = False
             first_bug = True
@@ -787,6 +790,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                     # any v will do, because we've aggregated by v.bug
                     v = pkg_vulns[notes[0]][0]
                     w(truncate("%s %s" % (v.bug, v.description)))
+                    write_url(v.bug)
 
                     for note in notes:
                         note_text = note[1]
@@ -843,6 +847,7 @@ this, you may have to upgrade other packages depending on them.
                     first_bug = False
                     self._bug_found = True
                 w(bug)
+                write_url(bug)
                 bugs[bug].sort()
                 for p in bugs[bug]:
                     w("  - %s" % p)
