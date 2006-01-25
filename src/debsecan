@@ -398,14 +398,30 @@ def fetch_data(options):
     r.add_header('User-Agent', 'debsecan/' + VERSION)
     try:
         u = urllib2.urlopen(r)
-    except urllib2.HTTPError, e:
         # In cron mode, we suppress almost all errors because we
         # assume that they are due to lack of Internet connectivity.
+    except urllib2.HTTPError, e:
         if (not options.cron) or e.code == 404:
             sys.stderr.write("error: while downloading %s:\n%s\n" % (url, e))
             sys.exit(1)
         else:
             sys.exit(0)
+    except urllib2.URLError, e:
+        if not options.cron:            # no e.code check here
+            # Be conservative about the attributes offerbed by
+            # URLError.  They are undocumented, and strerror is not
+            # available even though it is documented for
+            # EnvironmentError.
+            msg = e.__dict__.get('reason', '')
+            if msg:
+                msg = "error: while downloading %s:\nerror: %s\n" % (url, msg)
+            else:
+                msg = "error: while downloading %s:\n" % url
+            sys.stderr.write(msg)
+            sys.exit(1)
+        else:
+            sys.exit(0)
+
     data = []
     while 1:
         d = u.read(4096)

@@ -1,3 +1,10 @@
+debsecan (0.4.1) unstable; urgency=low
+
+  * urllib2 raises yet another exception when networking problems occur;
+    handle it.  Closes: #349578.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Wed, 25 Jan 2006 14:15:53 +0100
+
 debsecan (0.4.0) unstable; urgency=low
 
   * In report mode, aggregate similar packages into lists.  Suggested by
