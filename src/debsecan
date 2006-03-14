@@ -408,7 +408,7 @@ def fetch_data(options):
             sys.exit(0)
     except urllib2.URLError, e:
         if not options.cron:            # no e.code check here
-            # Be conservative about the attributes offerbed by
+            # Be conservative about the attributes offered by
             # URLError.  They are undocumented, and strerror is not
             # available even though it is documented for
             # EnvironmentError.
