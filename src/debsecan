@@ -270,16 +270,27 @@ def parse_cli():
     parser.add_option("--remove-whitelist", action="store_true",
                       dest="whitelist_remove",
                       help="remove entries from the whitelist")
+    parser.add_option("--show-whitelist", action="store_true",
+                      dest="whitelist_show",
+                      help="display entries on the whitelist")
     parser.add_option("--no-apt", action="store_true", dest="no_apt")
     (options, args) = parser.parse_args()
 
-    # Check the whitelist options.  They conflict with everything
-    # else.
-    if options.whitelist_add or options.whitelist_remove:
-        if options.whitelist_add and options.whitelist_remove:
+    def process_whitelist_options():
+        """Check the whitelist options.  They conflict with everything
+        else."""
+        count = 0
+        for x in (options.whitelist_add, options.whitelist_remove,
+                  options.whitelist_show):
+            if x:
+                count += 1
+        if count == 0:
+            return
+        if count > 1:
             sys.stderr.write(
-                "error: --add-whitelist and --remove-whitelist conflict\n")
+                "error: at most one whitelist option may be specified\n")
             sys.exit(1)
+
         for (k, v) in options.__dict__.items():
             if type(v) == types.MethodType or v is None:
                 continue
@@ -290,7 +301,18 @@ def parse_cli():
                 sys.stderr.write(
         "error: when editing the whitelist, no other options are allowed\n")
                 sys.exit(1)
-        return (options, args)
+
+    if options.whitelist_add:
+        whitelist_add(options, args)
+        sys.exit(0)
+    if options.whitelist_remove:
+        whitelist_remove(options, args)
+        sys.exit(0)
+    if options.whitelist_show:
+        whitelist_show(options, args)
+        sys.exit(0)
+
+    process_whitelist_options()
 
     if options.cron:
         options.format = 'report'
@@ -623,6 +645,16 @@ class Whitelist:
         f.close()
         os.rename(new_name, self.name)
 
+    def show(self, file):
+        l = []
+        for bug in self.bug_dict.keys():
+            file.write("%s (all packages)\n" % bug)
+        for (bug, pkg) in self.bug_package_dict.keys():
+            l.append("%s %s\n" % (bug, pkg))
+        l.sort()
+        for line in l:
+            file.write(line)
+
 def __whitelist_edit(options, args, method):
     w = Whitelist(options.whitelist)
     while args:
@@ -650,6 +682,8 @@ def whitelist_add(options, args):
     __whitelist_edit(options, args, lambda w, bug, pkg: w.add(bug, pkg))
 def whitelist_remove(options, args):
     __whitelist_edit(options, args, lambda w, bug, pkg: w.remove(bug, pkg))
+def whitelist_show(options, args):
+    Whitelist(options.whitelist).show(sys.stdout)
 
 # Classes for output formatting
 
@@ -1181,12 +1215,6 @@ def rate_system(target, options, vulns, history):
 
 if __name__ == "__main__":
     (options, args) = parse_cli()
-    if options.whitelist_add:
-        whitelist_add(options, args)
-        sys.exit(0)
-    if options.whitelist_remove:
-        whitelist_remove(options, args)
-        sys.exit(0)
     if options.need_history:
         history = History(options)
         if not history.expired():

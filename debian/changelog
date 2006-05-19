@@ -1,6 +1,7 @@
 debsecan (0.4.2) unstable; urgency=low
 
-  * Handle file open errors more gracefully.  Closes: 352925.
+  * Handle file open errors more gracefully.  Closes: #352925.
+  * Add --show-whitelist option.  Closes: #352927.
 
  -- Florian Weimer <fw@deneb.enyo.de>  Fri, 19 May 2006 18:10:38 +0200
 

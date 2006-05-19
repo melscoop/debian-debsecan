@@ -85,6 +85,15 @@ CAN-2006-0003,pkg3
 EOF
 diff -u whitelist.test whitelist.exp
 
+$debsecan --whitelist whitelist.test --show-whitelist > whitelist.out
+cat > whitelist.exp <<EOF
+CAN-2006-0001 (all packages)
+CAN-2006-0002 (all packages)
+CAN-2006-0001 pkg1
+CAN-2006-0003 pkg3
+EOF
+diff -u whitelist.out whitelist.exp
+
 $debsecan --whitelist whitelist.test --remove-whitelist CAN-2006-0003 pkg4
 cat > whitelist.exp <<EOF
 VERSION 0
