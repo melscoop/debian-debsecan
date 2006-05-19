@@ -167,7 +167,7 @@ class PackageFile:
                   file with the indicated name.
         """
         if fileObj is None:
-            fileObj = file(name)
+            fileObj = safe_open(name)
         self.name = name
         self.file = fileObj
         self.lineno = 0
@@ -216,6 +216,15 @@ class PackageFile:
 
 # End of code from debian_support
 ######################################################################
+
+# General support routines
+
+def safe_open(name, mode="r"):
+    try:
+        return file(name, mode)
+    except IOError, e:
+        sys.stdout.write("error: could not open %s: %s\n" % (`name`, e.strerror))
+        sys.exit(2)
 
 # Command line parser
 
@@ -549,7 +558,7 @@ class Whitelist:
         self.bug_dict = {}
         self.bug_package_dict = {}
         if name and os.path.exists(name):
-            src = file(name)
+            src = safe_open(name)
             line = src.readline()
             if line <> 'VERSION 0\n':
                 raise SyntaxError, "invalid whitelist file, got: " + `line`
@@ -601,7 +610,7 @@ class Whitelist:
         if not (self._dirty and self.name):
             return
         new_name = self.name + '.new'
-        f = file(new_name, "w+")
+        f = safe_open(new_name, "w+")
         f.write("VERSION 0\n")
         l = self.bug_dict.keys()
         l.sort()
@@ -781,7 +790,7 @@ class ReportFormatter(Formatter):
         """Writes self.new_history to the named history file.
         The file is replaced atomically."""
         new_name = name + '.new'
-        f = file(new_name, "w+")
+        f = safe_open(new_name, "w+")
         f.write("VERSION 1\n%d\n" % int(time.time()))
         for ((bug, package), fixed) in self.new_history.items():
             if fixed:
