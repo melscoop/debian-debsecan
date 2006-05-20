@@ -57,7 +57,11 @@ Change the output format.  If
 is
 .B summary
 (the default), a short summary for each vulnerability is printed.
-For
+The
+.B simple
+format is like the
+.B summary
+format, except that only the bug packages names are printed.  For
 .B bugs
 and
 .BR packages ,
@@ -134,8 +138,11 @@ ignores the vulnerability CVE-2005-4601 completely, while
 .IP
 .B debsecan --add-whitelist CVE-2005-4601 perlmagick
 .PP
-ignores it only as far as the perlmagick is concerned.  To remove all
-whitelist entries for the CVE-2005-4601 vulnerability, use:
+ignores it only as far as the perlmagick is concerned.  (This is the
+same format that is produced by the
+.B --format simple
+option.)  To remove all whitelist entries for the CVE-2005-4601
+vulnerability, use:
 .IP
 .B debsecan --remove-whitelist CVE-2005-4601
 .PP

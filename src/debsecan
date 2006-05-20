@@ -241,7 +241,7 @@ def parse_cli():
                       help="name of the dpkg status file")
     parser.add_option("--format", type="choice",
                       choices=['bugs', 'packages', 'summary', 'detail',
-                               'report'],
+                               'report', 'simple'],
                       default="summary",
                       help="change output format")
     parser.add_option("--only-fixed", action="store_true", dest="only_fixed",
@@ -780,6 +780,11 @@ class SummaryFormatter(Formatter):
         else:
             self.target.write("%s %s" % (v.bug, bin_name))
 
+class SimpleFormatter(Formatter):
+    def record(self, v,
+               (bin_name, bin_version), (src_name, src_version)):
+        self.target.write("%s %s" % (v.bug, bin_name))
+
 class DetailFormatter(Formatter):
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
@@ -1113,6 +1118,7 @@ in this report.""")
 formatters = {'bugs' : BugFormatter,
               'packages' : PackageFormatter,
               'summary' : SummaryFormatter,
+              'simple' : SimpleFormatter,
               'detail' : DetailFormatter,
               'report' : ReportFormatter}
 

@@ -4,6 +4,7 @@ debsecan (0.4.2) unstable; urgency=low
   * Add --show-whitelist option.  Closes: #352927.
   * Show an error message if a non-existing bug is removed from the
     whitelist.  Closes: #352952.
+  * Add "simple" format.  Closes: #352929.
 
  -- Florian Weimer <fw@deneb.enyo.de>  Fri, 19 May 2006 18:10:38 +0200
 
