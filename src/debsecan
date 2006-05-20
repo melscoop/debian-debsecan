@@ -605,22 +605,35 @@ class Whitelist:
         """Removes a bug/package pair from the whitelist.
         If the package is not specified, *all* whitelisted packages for
         that bug are removed."""
+        removed = False
         if pkg:
             try:
                 del self.bug_package_dict[(bug, pkg)]
-                self._dirty = True
+                removed = True
             except KeyError:
                 pass
         else:
             try:
                 del self.bug_dict[bug]
-                self._dirty = True
+                removed = True
             except KeyError:
                 pass
             for bug_pkg in self.bug_package_dict.keys():
                 if bug_pkg[0] == bug:
                     del self.bug_package_dict[bug_pkg]
-                    self._dirty = True
+                    removed = True
+
+        if removed:
+            self._dirty = True
+        else:
+            if pkg:
+                sys.stderr.write(
+                    "error: no matching whitelist entry for %s %s\n"
+                    % (bug, pkg))
+            else:
+                sys.stderr.write("error: no matching whitelist entry for %s\n"
+                                 % bug)
+            sys.exit(1)
 
     def check(self, bug, package):
         """Returns true if the bug/package pair is whitelisted."""

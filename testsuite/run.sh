@@ -94,15 +94,27 @@ CAN-2006-0003 pkg3
 EOF
 diff -u whitelist.out whitelist.exp
 
-$debsecan --whitelist whitelist.test --remove-whitelist CAN-2006-0003 pkg4
-cat > whitelist.exp <<EOF
-VERSION 0
-CAN-2006-0001,
-CAN-2006-0002,
-CAN-2006-0001,pkg1
-CAN-2006-0003,pkg3
+if $debsecan --whitelist whitelist.test \
+    --remove-whitelist CAN-2006-0003 pkg4 2>whitelist.out ; then
+    echo "FAILURE: --remove-whitelist on unknown package"
+    exit 1
+else
+    cat > whitelist.exp <<EOF
+error: no matching whitelist entry for CAN-2006-0003 pkg4
 EOF
-diff -u whitelist.test whitelist.exp
+    diff -u whitelist.out whitelist.exp
+fi
+
+if $debsecan --whitelist whitelist.test \
+    --remove-whitelist CAN-2006-9999 2>whitelist.out ; then
+    echo "FAILURE: --remove-whitelist on unknown bug"
+    exit 1
+else
+    cat > whitelist.exp <<EOF
+error: no matching whitelist entry for CAN-2006-9999
+EOF
+    diff -u whitelist.out whitelist.exp
+fi
 
 $debsecan --whitelist whitelist.test --remove-whitelist CAN-2006-0003 CAN-2006-0001
 cat > whitelist.exp <<EOF
