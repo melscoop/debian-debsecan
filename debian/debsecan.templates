@@ -1,7 +1,7 @@
 Template: debsecan/report
 Type: boolean
 Default: true
-Description: Do you want debsecan to send email reports?
+_Description: Do you want debsecan to send email reports?
  debsecan can check the security status of the host
  once per day, and notify you of any changess.
  .
@@ -13,7 +13,7 @@ Template: debsecan/suite
 Type: select
 Choices: GENERIC, sarge, etch, sid
 Default: GENERIC
-Description: From which suite do you want to install packges?
+_Description: From which suite do you want to install packges?
  To present more useful data, debsecan needs to know
  the Debian release from which you want to install packages.
  .
