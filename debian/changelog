@@ -1,3 +1,9 @@
+debsecan (0.4.3) unstable; urgency=low
+
+  * Correct spelling error in manpage.  Closes: #368376.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sun, 21 May 2006 20:02:55 +0200
+
 debsecan (0.4.2) unstable; urgency=low
 
   * Handle file open errors more gracefully.  Closes: #352925.
