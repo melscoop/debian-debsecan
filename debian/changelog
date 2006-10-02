@@ -1,8 +1,12 @@
 debsecan (0.4.3) unstable; urgency=low
 
   * Correct spelling error in manpage.  Closes: #368376.
+  * Promote python-apt to a full dependency.  Package versions containing
+    the ~ characters lack a clear specification, and reusing the existing
+    implementation in APT is the best way to deal with this issue.
+    Closes: #390596.
 
- -- Florian Weimer <fw@deneb.enyo.de>  Sun, 21 May 2006 20:02:55 +0200
+ -- Florian Weimer <fw@deneb.enyo.de>  Mon,  2 Oct 2006 19:46:10 +0200
 
 debsecan (0.4.2) unstable; urgency=low
 
