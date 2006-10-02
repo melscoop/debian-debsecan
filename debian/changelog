@@ -6,6 +6,8 @@ debsecan (0.4.3) unstable; urgency=low
     implementation in APT is the best way to deal with this issue.
     Closes: #390596.
   * Document the http_proxy environment variable.  Closes: #376773.
+  * Add Czech translation of debconf messages, by Miroslav Kure
+    <kurem@upcase.inf.upol.cz>.  Closes: #369098.
 
  -- Florian Weimer <fw@deneb.enyo.de>  Mon,  2 Oct 2006 19:46:10 +0200
 
