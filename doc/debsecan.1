@@ -124,6 +124,15 @@ Display a short help message and exit.
 .TP
 .B --version
 Display version information and exit.
+.SH ENVIRONMENT
+.TP
+.B http_proxy
+This environment variable instructs
+.B debsecan
+to use a proxy server to fetch the vulnerability data.  It must be of
+the form
+.B http://proxy.example.net:8080/
+(mimicking a URL).
 .SH "CHANGING THE WHITELIST"
 You can use the
 .B --add-whitelist
