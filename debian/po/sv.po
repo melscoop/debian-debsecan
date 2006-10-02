@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: debsecan 0.4.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-09-09 11:54-0600\n"
+"PO-Revision-Date: 2006-09-14 21:54+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../debsecan.templates:1001
+msgid "Do you want debsecan to send email reports?"
+msgstr "Vill du att debsecan ska skicka e-postrapporter?"
+
+#. Type: boolean
+#. Description
+#: ../debsecan.templates:1001
+msgid "debsecan can check the security status of the host once per day, and notify you of any changess."
+msgstr "Debsecan kan kontrollera säkerhetsstatusen för värdmaskinen en gång per dag, och notifiera dig när något ändras."
+
+#. Type: boolean
+#. Description
+#: ../debsecan.templates:1001
+msgid "If you answer \"yes\", debsecan will download a small file (about 100 kibibytes large) daily.  Your package list will not be transmitted to the server."
+msgstr "Om du svarar \"ja\" kommer debsecan att hämta en liten fil (ungefär 100 kilobyte stor) dagligen.  Din paketlista kommer inte att överföras till servern."
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:2001
+msgid "From which suite do you want to install packges?"
+msgstr "Från vilken svit vill du installera paket?"
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:2001
+msgid "To present more useful data, debsecan needs to know the Debian release from which you want to install packages."
+msgstr "För att presentera mer användbar data behöver debsecan veta vilken Debian-utgåva som från vilken du vill installera paket."
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:2001
+msgid "If you specify \"GENERIC\" (the default), only basic  debsecan functionality is available.  If you specify the suite matching your sources.list configuration, information about fixed and obsolete  packages will be included in email reports."
+msgstr "Om du anger \"GENERIC\" (standardvalet), finns endast grundläggande funktionalitet tillgänglig i debsecan.  Om du anger sviten som matchar din konfigurationsfil sources.list, kommer information om rättade och föråldrade paket att inkluderas i e-postrapporterna."
+
