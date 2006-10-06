@@ -5,7 +5,7 @@ _Description: Do you want debsecan to send email reports?
  debsecan can check the security status of the host
  once per day, and notify you of any changes.
  .
- If you answer "yes", debsecan will download a small file
+ If you choose this option, debsecan will download a small file
  once a day.  Your package list will not be transmitted to
  the server.
 
@@ -13,7 +13,7 @@ Template: debsecan/suite
 Type: select
 Choices: GENERIC, sarge, etch, sid
 Default: GENERIC
-_Description: From which suite do you want to install packages?
+_Description: Suite to install packages from:
  To present more useful data, debsecan needs to know
  the Debian release from which you want to install packages.
  .
