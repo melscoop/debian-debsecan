@@ -1,3 +1,9 @@
+debsecan (0.4.3.1) unstable; urgency=low
+
+  * More fixes for debconf templates.  Closes: #400811, #368376.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Wed, 29 Nov 2006 20:47:43 +0100
+
 debsecan (0.4.3) unstable; urgency=low
 
   * Correct spelling error in manpage.  Closes: #368376.
