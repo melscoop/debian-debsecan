@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: debsecan\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
-"POT-Creation-Date: 2006-10-02 20:09+0200\n"
+"POT-Creation-Date: 2006-10-08 22:43+0200\n"
 "PO-Revision-Date: 2006-05-27 12:15+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -24,9 +24,10 @@ msgstr "Chcete, aby debsecan zasílal emailové zprávy?"
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
+#, fuzzy
 msgid ""
 "debsecan can check the security status of the host once per day, and notify "
-"you of any changess."
+"you of any changes."
 msgstr ""
 "debsecan může jednou denně kontrolovat stav bezpečnosti tohoto počítače a "
 "při každé změně vás varovat."
@@ -34,10 +35,10 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
+#, fuzzy
 msgid ""
-"If you answer \"yes\", debsecan will download a small file (about 100 "
-"kibibytes large) daily.  Your package list will not be transmitted to the "
-"server."
+"If you choose this option, debsecan will download a small file once a day.  "
+"Your package list will not be transmitted to the server."
 msgstr ""
 "Odpovíte-li kladně, bude debsecan denně stahovat malý soubor (cca 100 "
 "kibibajtů). Váš seznam balíků se nebude kopírovat na server."
@@ -45,7 +46,8 @@ msgstr ""
 #. Type: select
 #. Description
 #: ../debsecan.templates:2001
-msgid "From which suite do you want to install packges?"
+#, fuzzy
+msgid "Suite to install packages from:"
 msgstr "Ze které větve instalujete balíky?"
 
 #. Type: select
@@ -61,10 +63,11 @@ msgstr ""
 #. Type: select
 #. Description
 #: ../debsecan.templates:2001
+#, fuzzy
 msgid ""
-"If you specify \"GENERIC\" (the default), only basic  debsecan functionality "
+"If you specify \"GENERIC\" (the default), only basic debsecan functionality "
 "is available.  If you specify the suite matching your sources.list "
-"configuration, information about fixed and obsolete  packages will be "
+"configuration, information about fixed and obsolete packages will be "
 "included in email reports."
 msgstr ""
 "Zadáte-li \"GENERIC\" (výchozí hodnota), bude dostupná pouze základní "
