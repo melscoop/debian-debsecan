@@ -39,9 +39,8 @@ msgid ""
 "If you choose this option, debsecan will download a small file once a day.  "
 "Your package list will not be transmitted to the server."
 msgstr ""
-"Se responder \"yes\", o debsecan irá fazer diariamente o download de um "
-"pequeno ficheiro (cerca de 100 kibibytes de tamanho).  A sua lista de "
-"pacotes não será transmitida ao servidor."
+"Se escolher esta opção o debsecan irá fazer diariamente o download de um "
+"pequeno ficheiro. A sua lista de pacotes não será transmitida ao servidor."
 
 #. Type: select
 #. Description
