@@ -1,0 +1,75 @@
+# Debsecan.
+# Copyright (C) 2006
+# This file is distributed under the same license as the debsecan package.
+# Florian Weimer <fw@deneb.enyo.de>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: debsecan_0.4.3.2\n"
+"Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
+"POT-Creation-Date: 2006-10-08 22:43+0200\n"
+"PO-Revision-Date: 2006-12-03 10:50+0100\n"
+"Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
+"Language-Team: French <debian-l10n-french@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: SWITZERLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#. Type: boolean
+#. Description
+#: ../debsecan.templates:1001
+msgid "Do you want debsecan to send email reports?"
+msgstr "Faut-il que Debsecan envoie des rapports via courriel?"
+
+#. Type: boolean
+#. Description
+#: ../debsecan.templates:1001
+msgid ""
+"debsecan can check the security status of the host once per day, and notify "
+"you of any changes."
+msgstr ""
+"Debsecan peut vérifier quotidiennement l'état de sécurité de l'hôte et vous "
+"informer de tout changement."
+
+#. Type: boolean
+#. Description
+#: ../debsecan.templates:1001
+msgid ""
+"If you choose this option, debsecan will download a small file once a day.  "
+"Your package list will not be transmitted to the server."
+msgstr ""
+"En choisissant cette option, Debsecan téléchargera quotidiennement un petit "
+"fichier. La liste des paquets ne sera pas transmise au serveur."
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:2001
+msgid "Suite to install packages from:"
+msgstr "Dépôt d'où les paquets seront installés:"
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:2001
+msgid ""
+"To present more useful data, debsecan needs to know the Debian release from "
+"which you want to install packages."
+msgstr ""
+"Afin de présenter des données utiles, Debsecan a besoin de connaître la "
+"version de Debian pour laquelle vous désirez installer des paquets."
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:2001
+msgid ""
+"If you specify \"GENERIC\" (the default), only basic debsecan functionality "
+"is available.  If you specify the suite matching your sources.list "
+"configuration, information about fixed and obsolete packages will be "
+"included in email reports."
+msgstr ""
+"En indiquant «GENERIC» (valeur par défaut), seules des fonctionnalités "
+"très basiques de Debsecan seront disponibles. En revanche, si vous indiquez "
+"la suite correspondant au fichier «sources.list», des informations sur les "
+"paquets corrigés et obsolètes seront incluses au rapport envoyé par courriel."
