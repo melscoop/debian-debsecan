@@ -1,3 +1,10 @@
+debsecan (0.4.3.4) unstable; urgency=low
+
+  * Add Italian debconf translation, by Luca Monducci.  Closes: #404418.
+  * Fix the fr.po file and remove strange characters.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sun, 24 Dec 2006 18:52:21 +0100
+
 debsecan (0.4.3.3) unstable; urgency=low
 
   * German debconf translation, by Matthias Julius.  Closes: #401497.
