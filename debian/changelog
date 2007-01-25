@@ -1,3 +1,9 @@
+debsecan (0.4.3.5) unstable; urgency=low
+
+  * Add /etc/cron.d directory to the package.  Closes: #408237.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Thu, 25 Jan 2007 21:49:17 +0100
+
 debsecan (0.4.3.4) unstable; urgency=low
 
   * Add Italian debconf translation, by Luca Monducci.  Closes: #404418.
