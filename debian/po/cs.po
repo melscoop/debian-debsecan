@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: debsecan\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
-"POT-Creation-Date: 2007-02-18 15:50+0100\n"
+"POT-Creation-Date: 2007-02-18 16:50+0100\n"
 "PO-Revision-Date: 2006-05-27 12:15+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -18,7 +18,8 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-msgid "Do you want debsecan to send email reports?"
+#, fuzzy
+msgid "Do you want debsecan to send daily reports?"
 msgstr "Chcete, aby debsecan zasílal emailové zprávy?"
 
 #. Type: boolean
@@ -27,7 +28,7 @@ msgstr "Chcete, aby debsecan zasílal emailové zprávy?"
 #, fuzzy
 msgid ""
 "debsecan can check the security status of the host once per day, and notify "
-"you of any changes."
+"you of any changes by email."
 msgstr ""
 "debsecan může jednou denně kontrolovat stav bezpečnosti tohoto počítače a "
 "při každé změně vás varovat."
@@ -52,16 +53,16 @@ msgstr ""
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
-#, fuzzy
-msgid "Suite to install packages from:"
-msgstr "Ze které větve instalujete balíky?"
+msgid "Main suite from which packages are installed:"
+msgstr ""
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
+#, fuzzy
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
-"which you want to install packages."
+"which you usually install packages."
 msgstr ""
 "Aby mohl debsecan poskytovat lepší informace, potřebuje vědět, kterou verzi "
 "Debianu používáte."
@@ -91,7 +92,11 @@ msgstr ""
 #. Description
 #: ../debsecan.templates:4001
 msgid ""
-"debsecan fetches vulnerability information from the network. If you are "
-"disconnected from the Internet, but can enter the address of a local mirror "
+"debsecan fetches vulnerability information from the network. If your system "
+"is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr ""
+
+#, fuzzy
+#~ msgid "Suite to install packages from:"
+#~ msgstr "Ze které větve instalujete balíky?"

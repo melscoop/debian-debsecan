@@ -1,9 +1,9 @@
 Template: debsecan/report
 Type: boolean
 Default: true
-_Description: Do you want debsecan to send email reports?
+_Description: Do you want debsecan to send daily reports?
  debsecan can check the security status of the host
- once per day, and notify you of any changes.
+ once per day, and notify you of any changes by email.
  .
  If you choose this option, debsecan will download a small file
  once a day.  Your package list will not be transmitted to
@@ -18,9 +18,9 @@ Template: debsecan/suite
 Type: select
 Choices: GENERIC, sarge, etch, sid
 Default: GENERIC
-_Description: Suite to install packages from:
+_Description: Main suite from which packages are installed:
  To present more useful data, debsecan needs to know
- the Debian release from which you want to install packages.
+ the Debian release from which you usually install packages.
  .
  If you specify "GENERIC" (the default), only basic debsecan
  functionality is available.  If you specify the suite
