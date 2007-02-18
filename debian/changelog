@@ -1,3 +1,12 @@
+debsecan (0.4.4) unstable; urgency=high
+
+  * Add the configuration file /etc/default/debsecan.  Closes: #410946.
+  * Using the new configuration file, it is possible to control
+    where daily reports are sent.  Closes: #398199.
+  * Try to make debconf questions easier to understand.  Closes: #407186.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sun, 18 Feb 2007 16:52:59 +0100
+
 debsecan (0.4.3.5) unstable; urgency=low
 
   * Add /etc/cron.d directory to the package.  Closes: #408237.
