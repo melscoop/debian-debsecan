@@ -9,6 +9,11 @@ _Description: Do you want debsecan to send email reports?
  once a day.  Your package list will not be transmitted to
  the server.
 
+Template: debsecan/mailto
+Type: string
+Default: root
+_Description: Email address to which daily reports should be sent:
+
 Template: debsecan/suite
 Type: select
 Choices: GENERIC, sarge, etch, sid
@@ -21,3 +26,12 @@ _Description: Suite to install packages from:
  functionality is available.  If you specify the suite
  matching your sources.list configuration, information about
  fixed and obsolete packages will be included in email reports.
+
+Template: debsecan/source
+Type: string
+Default:
+_Description: URL of vulnerability information:
+ debsecan fetches vulnerability information from the network.
+ If your system is not connected to the Internet, you can enter
+ the URL of a local mirror here.  If you leave this option
+ empty, the built-in default URL is used.

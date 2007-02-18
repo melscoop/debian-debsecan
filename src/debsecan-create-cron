@@ -5,21 +5,9 @@ set -e
 FILE=/etc/cron.d/debsecan
 
 usage () {
-    echo "usage: $0 SUITE"
+    echo "usage: $0 [--upgrade]"
     exit 1
 }
-
-if test "x$1" = "x--suite" ; then
-    shift
-fi
-
-if test $# -ne 1 ; then
-    usage
-fi
-
-if test -z "$1" ; then
-    usage
-fi
 
 if test -e "$FILE" ; then
     if grep '^# AUTOMATICALLY GENERATED$' "$FILE" > /dev/null ; then
@@ -32,44 +20,35 @@ else
 fi
 
 case "$1" in
-    --generic)
-	suite=""
-	;;
-    --check)
+    --upgrade)
 	if $may_overwrite ; then
-	    exit 0
+	    :
 	else
-	    exit 1
+	    echo "warning: /etc/cron.d/debsecan already exists with unexpected content"
+	    echo "warning: You can regenerated it with /usr/sbin/debsecan-create-cron."
+	    exit 0
 	fi
 	;;
     -*)
-	echo "error: illegal suite name '$1'"
+	echo "error: illegal option '$1'"
 	exit 1
 	;;
     *)
-	suite="--suite $1"
+	if test "$#" -ne 0 ; then
+	    echo "error: illegal positional argument"
+	    exit 1
+	fi
 	;;
 esac
-
-if $may_overwrite ; then
-    :
-else
-    echo "error: $FILE already exists"
-    exit 1
-fi
 
 MIN=$(($RANDOM % 60))
 
 cat > "$FILE" <<EOF
 # cron entry for debsecan
-#
-# AUTOMATICALLY GENERATED
-# (Delete the preceding line if you edit this file.)
 
-$MIN * * * * daemon test -x /usr/bin/debsecan && /usr/bin/debsecan $suite --mailto root --cron
+$MIN * * * * daemon test -x /usr/bin/debsecan && /usr/bin/debsecan --cron
 # (Note: debsecan delays actual processing past 2:00 AM, and runs only
 # once per day.)
 EOF
 
-echo "$0: cron file $FILE updated."
 exit 0

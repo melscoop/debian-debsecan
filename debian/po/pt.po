@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: debsecan 0.4.3\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
-"POT-Creation-Date: 2006-10-08 22:43+0200\n"
+"POT-Creation-Date: 2007-02-18 15:50+0100\n"
 "PO-Revision-Date: 2006-11-28 20:40+0000\n"
 "Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
@@ -42,15 +42,21 @@ msgstr ""
 "Se escolher esta opção o debsecan irá fazer diariamente o download de um "
 "pequeno ficheiro. A sua lista de pacotes não será transmitida ao servidor."
 
-#. Type: select
+#. Type: string
 #. Description
 #: ../debsecan.templates:2001
+msgid "Email address to which daily reports should be sent:"
+msgstr ""
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:3001
 msgid "Suite to install packages from:"
 msgstr ""
 
 #. Type: select
 #. Description
-#: ../debsecan.templates:2001
+#: ../debsecan.templates:3001
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you want to install packages."
@@ -60,7 +66,7 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../debsecan.templates:2001
+#: ../debsecan.templates:3001
 #, fuzzy
 msgid ""
 "If you specify \"GENERIC\" (the default), only basic debsecan functionality "
@@ -72,6 +78,21 @@ msgstr ""
 "funcionalidade básica do debsecan.  Se especificar o conjunto que coincide "
 "com a sua configuração no sources.list, será incluída, nos relatórios por "
 "email, a informação acerca dos pacotes corrigidos e obsoletos."
+
+#. Type: string
+#. Description
+#: ../debsecan.templates:4001
+msgid "URL of vulnerability information:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../debsecan.templates:4001
+msgid ""
+"debsecan fetches vulnerability information from the network. If you are "
+"disconnected from the Internet, but can enter the address of a local mirror "
+"here.  If you leave this option empty, the built-in default URL is used."
+msgstr ""
 
 #~ msgid "From which suite do you want to install packges?"
 #~ msgstr "A partir de que conjunto deseja instalar pacotes?"

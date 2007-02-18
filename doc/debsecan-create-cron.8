@@ -1,5 +1,5 @@
 .\" debsecan-create-cron - Debian Security Analyzer (cron entries)
-.\" Copyright (C) 2005 Florian Weimer
+.\" Copyright (C) 2005, 2007 Florian Weimer
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -20,36 +20,21 @@
 debsecan-create-cron \- Create cron entry for the Debian Security Analyzer
 .SH SYNOPSIS
 .B debsecan-create-cron
-.I suite
 .br
-.B debsecan-create-cron --generic
+.B debsecan-create-cron --upgrade
 .SH DESCRIPTION
 .B debsecan-create-cron
 creates a cron entry for
 .BR debsecan ,
-the Debian security analyzer.  The
-.I suite
-specifies the Debian release the system is running.
+the Debian security analyzer.
 .P
 The cron entry runs hourly, but
 .B debsecan
 itself restricts actually processing to once a day.  The minute the
 cron job runs is selected randomly, to reduce peak server load.
 .P
-.B debsecan-create-cron --generic
-creates a generic cron entry which is does not include a suite
-argument.  (This is only used to initialize
-.B debsecan
-without user interaction; you should specifiy the correct suite when
-invoking
-.B debsecan-create-cron
-manually, so that
-.BR debsecan 's
-output will contain additional information.)
-.P
-If the cron entry is no longer marked as automatically generated,
-.B debsecan-create-cron
-will refuse to overwrite it.
+.B debsecan-create-cron --upgrade
+is used internally to upgrade an older cron entry.
 .SH AUTHOR
 .B debsecan
 was written by Florian Weimer.

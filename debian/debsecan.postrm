@@ -4,11 +4,7 @@ set -e
 
 case "$1" in
     purge)
-	cron_file=/etc/cron.d/debsecan
-	if test -e $cron_file && \
-	    grep '^# AUTOMATICALLY GENERATED$' $cron_file > /dev/null ; then
-	    rm $cron_file
-	fi
+	rm -f /etc/cron.d/debsecan
 	;;
 esac
 

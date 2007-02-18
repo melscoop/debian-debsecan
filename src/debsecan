@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # debsecan - Debian Security Analyzer
-# Copyright (C) 2005, 2006 Florian Weimer
+# Copyright (C) 2005, 2006, 2007 Florian Weimer
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import copy
 from cStringIO import StringIO
 from optparse import OptionParser
 import os
+import os.path
 import re
 import socket
 import sys
@@ -226,11 +227,102 @@ def safe_open(name, mode="r"):
         sys.stdout.write("error: could not open %s: %s\n" % (`name`, e.strerror))
         sys.exit(2)
 
+# Configuration file parser
+
+class ConfigParser:
+    def __init__(self, name, file=None):
+        self.name = name
+        if file is None:
+            if os.path.exists(name):
+                self.file = safe_open(name)
+            else:
+                self.file = None
+        else:
+            self.file = file
+
+    def onComment(self, line, number):
+        pass
+
+    def onKey(self, line, number, key, value, trailer):
+        pass
+
+    def onError(self, line, number):
+        sys.stderr.write("%s:%d: invalid configuration file syntax"
+                         % (line, number))
+        sys.exit(2)
+
+    def parse(self, re_comment=re.compile(r'^\s*(?:#.*)?$'),
+              re_key=re.compile(r'^\s*([A-Z]+)=(.*?)\s*$')):
+        if self.file is None:
+            return
+        lineno = 0
+        for line in self.file:
+            lineno += 1
+            match = re_comment.match(line)
+            if match is not None:
+                self.onComment(line, lineno)
+                continue
+
+            match = re_key.match(line)
+            if match is not None:
+                (k, v) = match.groups()
+                self.onKey(line, lineno, k, v, '\n')
+                continue
+
+            onError(line, lineno)
+
+def read_config(name, file=None):
+    """Read the configuration file NAME into a dictionary and return it."""
+    config = {}
+    class Parser(ConfigParser):
+        def onKey(self, line, number, key, value, trailer):
+            config[key] = value
+    Parser(name, file).parse()
+    return config
+
+def update_config(name):
+    """Update the configuration file NAME with data from standard input."""
+    new_config = read_config('<stdin>', sys.stdin)
+
+    new_file = []
+    class Parser(ConfigParser):
+        def onComment(self, line, lineno):
+            new_file.append(line)
+        def onKey(self, line, lineno, key, value, trailer):
+            if new_config.has_key(key):
+                if new_config[key] <> value:
+                    new_file.append("%s=%s%s"
+                                    % (key, new_config[key], trailer))
+                else:
+                    new_file.append(line)
+                del new_config[key]
+            else:
+                new_file.append(line)
+    Parser(name).parse()
+
+    remaining = new_config.keys()
+    remaining.sort()
+    if remaining:
+        if remaining[-1] <> "\n":
+            new_file.append("\n")
+        for k in remaining:
+            new_file.append("%s=%s\n" % (k, new_config[k]))
+
+    conf = file(name, "w+")
+    try:
+        for line in new_file:
+            conf.write(line)
+    finally:
+        conf.close()
+
 # Command line parser
 
 def parse_cli():
     """Reads sys.argv and returns an options object."""
     parser = OptionParser(usage="%prog OPTIONS...")
+    parser.add_option("--config", metavar="FILE",
+                      help="sets the name of the configuration file",
+                      default='/etc/default/debsecan')
     parser.add_option("--suite", type="choice",
                       choices=['woody', 'sarge', 'etch', 'sid'],
                       help="set the Debian suite of this installation")
@@ -274,6 +366,8 @@ def parse_cli():
                       dest="whitelist_show",
                       help="display entries on the whitelist")
     parser.add_option("--no-apt", action="store_true", dest="no_apt")
+    parser.add_option("--update-config", action="store_true",
+                      dest="update_config", help=None)
     (options, args) = parser.parse_args()
 
     def process_whitelist_options():
@@ -317,9 +411,6 @@ def parse_cli():
     if options.cron:
         options.format = 'report'
         options.update_history = True
-        if not options.mailto:
-            sys.stderr.write("error: --cron option requires --mailto\n")
-            sys.exit(1)
     if options.only_fixed and not options.suite:
         sys.stderr.write("error: --only-fixed requires --suite\n")
         sys.exit(1)
@@ -328,6 +419,9 @@ def parse_cli():
         sys.exit(1)
     if options.update_history and options.format <> 'report':
         sys.stderr.write("error: --update-history requires report format\n")
+        sys.exit(1)
+    if options.cron and options.format <> 'report':
+        sys.stderr.write("error: --cron requires report format\n")
         sys.exit(1)
     if options.mailto and options.format <> 'report':
         sys.stderr.write("error: --mailto requires report format\n")
@@ -341,7 +435,17 @@ def parse_cli():
             Version = VersionAPT
         except ImportError:
             options.no_apt = True
-    return (options, args)
+
+    config = read_config(options.config)
+    if options.cron and not options.mailto:
+        options.mailto = config.get('MAILTO', '')
+        if options.mailto == '':
+            options.mailto = 'root'
+    options.suite = options.suite or config.get('SUITE', None)
+    if options.suite == 'GENERIC':
+        options.suite = None
+
+    return (options, config, args)
 
 # Vulnerabilities
 
@@ -413,18 +517,17 @@ class Vulnerability:
                 self.unstable_version = None
             self.other_versions = map(Version, self.other_versions)
 
-def fetch_data(options):
+def fetch_data(options, config):
     """Returns a dictionary PACKAGE -> LIST-OF-VULNERABILITIES."""
-    url = options.source
-    if not url:
-        url = "http://secure-testing.debian.net/debian-secure-testing/" \
-              "project/debsecan/release/1/"
-    elif url[-1] <> "/":
+    url = options.source or config.get("SOURCE", None) \
+        or "http://secure-testing.debian.net/debian-secure-testing/" \
+           "project/debsecan/release/1/"
+    if url[-1] <> "/":
         url += "/"
     if options.suite:
-        url = url + options.suite
+        url += options.suite
     else:
-        url = url + 'GENERIC'
+        url += 'GENERIC'
     r = urllib2.Request(url)
     r.add_header('User-Agent', 'debsecan/' + VERSION)
     try:
@@ -1233,7 +1336,13 @@ def rate_system(target, options, vulns, history):
     target.finish()
 
 if __name__ == "__main__":
-    (options, args) = parse_cli()
+    (options, config, args) = parse_cli()
+    if (options.update_config):
+        update_config(options.config)
+        sys.exit(0)
+    if options.cron and config.get("REPORT", "true") <> "true":
+        # Do nothing in cron mode if reporting is disabled.
+        sys.exit(0)
     if options.need_history:
         history = History(options)
         if not history.expired():
@@ -1244,4 +1353,4 @@ if __name__ == "__main__":
         target = TargetMail(options)
     else:
         target = TargetPrint(options)
-    rate_system(target, options, fetch_data(options), history)
+    rate_system(target, options, fetch_data(options, config), history)

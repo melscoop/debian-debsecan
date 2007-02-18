@@ -26,6 +26,7 @@ for testcase in [0-9][0-9][0-9] ; do
 		fi
 
 		if $debsecan $options \
+		    --config /dev/null \
 		    --suite $suite \
 		    --source "$url/$testcase" \
 		    --history $testcase/history \

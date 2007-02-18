@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: debsecan 0.4.3.3 italian debconf templates\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
-"POT-Creation-Date: 2006-10-08 22:43+0200\n"
+"POT-Creation-Date: 2007-02-18 15:50+0100\n"
 "PO-Revision-Date: 2006-12-24 12:09+0100\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -41,15 +41,21 @@ msgstr ""
 "Se si attiva questa opzione, debsecan scarica un piccolo file una volta al "
 "giorno; il proprio elenco dei pacchetti non viene trasmesso al server."
 
-#. Type: select
+#. Type: string
 #. Description
 #: ../debsecan.templates:2001
+msgid "Email address to which daily reports should be sent:"
+msgstr ""
+
+#. Type: select
+#. Description
+#: ../debsecan.templates:3001
 msgid "Suite to install packages from:"
 msgstr "Release da cui installare i pacchetti:"
 
 #. Type: select
 #. Description
-#: ../debsecan.templates:2001
+#: ../debsecan.templates:3001
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you want to install packages."
@@ -59,7 +65,7 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../debsecan.templates:2001
+#: ../debsecan.templates:3001
 msgid ""
 "If you specify \"GENERIC\" (the default), only basic debsecan functionality "
 "is available.  If you specify the suite matching your sources.list "
@@ -70,3 +76,18 @@ msgstr ""
 "funzionalità di base di debsecan. Se si specifica la stessa release indicata "
 "in sources.list, le informazioni su pacchetti per i quali esistono delle "
 "correzioni o obsoleti sono incluse nei report via email."
+
+#. Type: string
+#. Description
+#: ../debsecan.templates:4001
+msgid "URL of vulnerability information:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../debsecan.templates:4001
+msgid ""
+"debsecan fetches vulnerability information from the network. If you are "
+"disconnected from the Internet, but can enter the address of a local mirror "
+"here.  If you leave this option empty, the built-in default URL is used."
+msgstr ""

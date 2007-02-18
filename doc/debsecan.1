@@ -1,5 +1,5 @@
 .\" debsecan - Debian Security Analyzer
-.\" Copyright (C) 2005 Florian Weimer
+.\" Copyright (C) 2005, 2007 Florian Weimer
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -119,20 +119,43 @@ In this case, further processing is skipped.  See
 .BR debsecan-create-cron (8)
 for instructions how to create a suitable cron entry.
 .TP
+.B --config \fIfile\fP
+Sets the location of the configuration file.
+.TP
 .B --help
 Display a short help message and exit.
 .TP
 .B --version
 Display version information and exit.
-.SH ENVIRONMENT
+.SH "CONFIGURATION FILE"
+The configuration file contains the following variables.  It follows
+.IR name = value
+shell syntax.
 .TP
-.B http_proxy
-This environment variable instructs
+.B MAILTO
+Sets the email address to which reports are sent in
+.B --cron
+mode.
+.TP
+.B REPORT
+Controls whether
 .B debsecan
-to use a proxy server to fetch the vulnerability data.  It must be of
-the form
-.B http://proxy.example.net:8080/
-(mimicking a URL).
+does any processing whatsoever in
+.B --cron
+mode.
+(Permitted values:
+.B true
+and
+.BR false .)
+.TP
+.B SOURCE
+Controls the URL from which vulnerability information is fetched.
+If empty, the built-in default is used.
+.TP
+.B SUITE
+Sets the default value of the
+.B --suite
+option (see there).
 .SH "CHANGING THE WHITELIST"
 You can use the
 .B --add-whitelist
@@ -249,6 +272,22 @@ notifications of new security issues:
 See
 .BR debsecan-create-cron (8)
 for a tool which creates a suitable cron entry.
+.SH ENVIRONMENT
+.TP
+.B http_proxy
+This environment variable instructs
+.B debsecan
+to use a proxy server to fetch the vulnerability data.  It must be of
+the form
+.B http://proxy.example.net:8080/
+(mimicking a URL).
+.SH FILES
+.TP
+.I /etc/default/debsecan
+Built-in location of the configuration file.
+.TP
+.I /var/lib/dpkg/status
+File from which the package information is fetched by default.
 .SH AUTHOR
 .B debsecan
 was written by Florian Weimer.
