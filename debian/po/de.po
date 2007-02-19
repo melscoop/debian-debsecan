@@ -2,13 +2,13 @@
 # Copyright (C) 2006, Matthias Julius
 # This file is distributed under the same license as the debsecan package.
 #
-# Matthias Julius <mdeb@julius-net.net>, 2006.
+# Matthias Julius <mdeb@julius-net.net>, 2006, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: debsecan 0.4.3.2\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
 "POT-Creation-Date: 2007-02-18 16:50+0100\n"
-"PO-Revision-Date: 2006-12-03 22:58-0500\n"
+"PO-Revision-Date: 2007-02-18 21:41-0500\n"
 "Last-Translator: Matthias Julius <mdeb@julius-net.net>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,20 +19,18 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid "Do you want debsecan to send daily reports?"
-msgstr "Möchten Sie, dass debsecan Berichte per Email verschickt?"
+msgstr "Möchten Sie, dass debsecan tägliche Berichte versendet?"
 
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid ""
 "debsecan can check the security status of the host once per day, and notify "
 "you of any changes by email."
 msgstr ""
-"Debsecan kann den Sicherheitszustand des Rechners einmal pro Tag prüfen und "
-"Sie bei Änderungen informieren."
+"Debsecan kann den Sicherheitsstatus des Rechners einmal pro Tag prüfen und "
+"Sie bei Änderungen per Email informieren."
 
 #. Type: boolean
 #. Description
@@ -48,24 +46,23 @@ msgstr ""
 #. Description
 #: ../debsecan.templates:2001
 msgid "Email address to which daily reports should be sent:"
-msgstr ""
+msgstr "Email-Adresse, an die tägliche Berichte gesendet werden sollen:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
 msgid "Main suite from which packages are installed:"
-msgstr ""
+msgstr "Hauptsächliche Release, von der Pakete installiert werden:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
-#, fuzzy
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you usually install packages."
 msgstr ""
 "Um nützlichere Daten zu präsentieren, muss debsecan die Debian-Release "
-"kennen, von der Sie Pakete installieren wollen."
+"kennen, von der Sie gewöhnlich Pakete installieren."
 
 #. Type: select
 #. Description
@@ -85,7 +82,7 @@ msgstr ""
 #. Description
 #: ../debsecan.templates:4001
 msgid "URL of vulnerability information:"
-msgstr ""
+msgstr "URL für Informationen über Sicherheitslücken:"
 
 #. Type: string
 #. Description
@@ -95,6 +92,8 @@ msgid ""
 "is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr ""
+"Debsecan lädt Informationen über Sicherheitslücken aus dem Netzerk. Falls "
+"Ihr System nicht mit dem Internet verbunden ist, können Sie die URL eines "
+"lokalen Spiegel-Servers hier angeben. Falls Sie diese Einstellung leer "
+"lassen, wird eine voreingestellte URL verwendet."
 
-#~ msgid "Suite to install packages from:"
-#~ msgstr "Release, von der Pakete installiert werden sollen:"
