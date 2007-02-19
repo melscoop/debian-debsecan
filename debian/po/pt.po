@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: debsecan 0.4.3\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
 "POT-Creation-Date: 2007-02-18 16:50+0100\n"
-"PO-Revision-Date: 2006-11-28 20:40+0000\n"
+"PO-Revision-Date: 2007-02-18 22:38+0000\n"
 "Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,66 +17,62 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid "Do you want debsecan to send daily reports?"
-msgstr "Deseja que o debsecan envie, por email, relatórios?"
+msgstr "Deseja que o debsecan envie relatórios diários?"
 
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid ""
 "debsecan can check the security status of the host once per day, and notify "
 "you of any changes by email."
 msgstr ""
 "O debsecan pode verificar o estado de segurança da máquina uma vez por dia, "
-"e notifica-lo acerca de quaisquer alterações."
+"e notifica-lo de quaisquer alterações por email."
 
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid ""
 "If you choose this option, debsecan will download a small file once a day.  "
 "Your package list will not be transmitted to the server."
 msgstr ""
-"Se escolher esta opção o debsecan irá fazer diariamente o download de um "
-"pequeno ficheiro. A sua lista de pacotes não será transmitida ao servidor."
+"Se escolher esta opção o debsecan irá fazer o download de um pequeno "
+"ficheiro uma vez por dia.  A sua lista de pacotes não será transmitida ao "
+"servidor."
 
 #. Type: string
 #. Description
 #: ../debsecan.templates:2001
 msgid "Email address to which daily reports should be sent:"
-msgstr ""
+msgstr "Endereço de email para o qual devem ser enviados os relatórios diários:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
 msgid "Main suite from which packages are installed:"
-msgstr ""
+msgstr "Conjunto principal a partir do qual são instalados pacotes:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
-#, fuzzy
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you usually install packages."
 msgstr ""
 "Para apresentar dados mais úteis, o debsecan necessita saber a a partir de "
-"qual lançamento Debian deseja instalar pacotes."
+"qual lançamento Debian normalmente você instala pacotes."
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
-#, fuzzy
 msgid ""
 "If you specify \"GENERIC\" (the default), only basic debsecan functionality "
 "is available.  If you specify the suite matching your sources.list "
 "configuration, information about fixed and obsolete packages will be "
 "included in email reports."
 msgstr ""
-"Se especificar \"GENERIC\" (por omissão), apenas fica disponível a "
+"Se especificar \"GENERIC\" (o valor por omissão), apenas fica disponível a "
 "funcionalidade básica do debsecan.  Se especificar o conjunto que coincide "
 "com a sua configuração no sources.list, será incluída, nos relatórios por "
 "email, a informação acerca dos pacotes corrigidos e obsoletos."
@@ -85,7 +81,7 @@ msgstr ""
 #. Description
 #: ../debsecan.templates:4001
 msgid "URL of vulnerability information:"
-msgstr ""
+msgstr "URL da informação da vulnerabilidade:"
 
 #. Type: string
 #. Description
@@ -95,6 +91,10 @@ msgid ""
 "is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr ""
+"O debsecan procura informação de vulnerabilidades a partir da rede. Se o "
+"seu sistema não estiver ligado à Internet, pode introduzir aqui o URL de "
+"um mirror local.  Se deixar esta opção em branco, será utilizado o URL "
+"incluido por omissão."
 
 #~ msgid "From which suite do you want to install packges?"
 #~ msgstr "A partir de que conjunto deseja instalar pacotes?"
