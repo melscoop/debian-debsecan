@@ -1,14 +1,14 @@
 # Italian (it) translation of debconf templates for debsecan
 # Copyright (C) 2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the debsecan package.
-# Luca Monducci <luca.mo@tiscali.it>, 2006.
+# Luca Monducci <luca.mo@tiscali.it>, 2006, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: debsecan 0.4.3.3 italian debconf templates\n"
+"Project-Id-Version: debsecan 0.4.4 italian debconf templates\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
 "POT-Creation-Date: 2007-02-18 16:50+0100\n"
-"PO-Revision-Date: 2006-12-24 12:09+0100\n"
+"PO-Revision-Date: 2007-02-19 11:19+0100\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -18,20 +18,18 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid "Do you want debsecan to send daily reports?"
-msgstr "Si vuole che debsecan invii dei report via email?"
+msgstr "Si vuole che debsecan invii dei report giornalieri?"
 
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid ""
 "debsecan can check the security status of the host once per day, and notify "
 "you of any changes by email."
 msgstr ""
-"debsecan può verificare lo stato della sicurezza della macchina una volta al "
-"giorno e notificare qualsiasi cambiamento."
+"debsecan può verificare lo stato della sicurezza della macchina e, una volta "
+"al giorno, notificare via email qualsiasi cambiamento."
 
 #. Type: boolean
 #. Description
@@ -47,24 +45,23 @@ msgstr ""
 #. Description
 #: ../debsecan.templates:2001
 msgid "Email address to which daily reports should be sent:"
-msgstr ""
+msgstr "Indirizzo email a cui devono essere inviati i report giornalieri:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
 msgid "Main suite from which packages are installed:"
-msgstr ""
+msgstr "Release dalla quale abitualmente si installano i pacchetti:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
-#, fuzzy
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you usually install packages."
 msgstr ""
-"Per presentare dei dati più utili, debsecan deve conoscere da quale release "
-"Debian si vogliono installare i pacchetti."
+"Per presentare dei informazioni ancora più utili, debsecan deve conoscere da "
+"quale release Debian si installano solitamente i pacchetti."
 
 #. Type: select
 #. Description
@@ -78,13 +75,13 @@ msgstr ""
 "Se si indica \"GENERIC\" (il valore predefinito) sono disponibili solo le "
 "funzionalità di base di debsecan. Se si specifica la stessa release indicata "
 "in sources.list, le informazioni su pacchetti per i quali esistono delle "
-"correzioni o obsoleti sono incluse nei report via email."
+"correzioni o obsoleti vengono inserite nei report via email."
 
 #. Type: string
 #. Description
 #: ../debsecan.templates:4001
 msgid "URL of vulnerability information:"
-msgstr ""
+msgstr "URL delle informazioni sulle vulnerabilità:"
 
 #. Type: string
 #. Description
@@ -94,6 +91,6 @@ msgid ""
 "is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr ""
-
-#~ msgid "Suite to install packages from:"
-#~ msgstr "Release da cui installare i pacchetti:"
+"debsecan prende le informazioni sulle vulnerabilità dalla rete. Se il "
+"proprio sistema non è connesso a Internet si può inserire l'URL di un mirror "
+"locale. Se si lascia vuota questa voce, viene usata l'URL predefinita."
