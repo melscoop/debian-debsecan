@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: debsecan\n"
 "Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
 "POT-Creation-Date: 2007-02-18 16:50+0100\n"
-"PO-Revision-Date: 2006-05-27 12:15+0200\n"
+"PO-Revision-Date: 2007-02-19 22:02+0100\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,59 +18,54 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid "Do you want debsecan to send daily reports?"
-msgstr "Chcete, aby debsecan zasílal emailové zprávy?"
+msgstr "Chcete, aby debsecan zasílal denní hlášení?"
 
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid ""
 "debsecan can check the security status of the host once per day, and notify "
 "you of any changes by email."
 msgstr ""
 "debsecan může jednou denně kontrolovat stav bezpečnosti tohoto počítače a "
-"při každé změně vás varovat."
+"při každé změně vás emailem varovat."
 
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
-#, fuzzy
 msgid ""
 "If you choose this option, debsecan will download a small file once a day.  "
 "Your package list will not be transmitted to the server."
 msgstr ""
-"Odpovíte-li kladně, bude debsecan denně stahovat malý soubor (cca 100 "
-"kibibajtů). Váš seznam balíků se nebude kopírovat na server."
+"Zvolíte-li tuto možnost, bude debsecan denně stahovat malý soubor. Váš "
+"seznam balíků se nebude kopírovat na server."
 
 #. Type: string
 #. Description
 #: ../debsecan.templates:2001
 msgid "Email address to which daily reports should be sent:"
-msgstr ""
+msgstr "Emailová adresa, na kterou se mají zasílat denní hlášení:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
 msgid "Main suite from which packages are installed:"
-msgstr ""
+msgstr "Hlavní větev, ze které instalujete balíky:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
-#, fuzzy
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you usually install packages."
 msgstr ""
-"Aby mohl debsecan poskytovat lepší informace, potřebuje vědět, kterou verzi "
-"Debianu používáte."
+"Aby mohl debsecan poskytovat lepší informace, potřebuje vědět, ze které "
+"větve Debianu nejčastěji instalujete balíky."
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
-#, fuzzy
 msgid ""
 "If you specify \"GENERIC\" (the default), only basic debsecan functionality "
 "is available.  If you specify the suite matching your sources.list "
@@ -86,7 +81,7 @@ msgstr ""
 #. Description
 #: ../debsecan.templates:4001
 msgid "URL of vulnerability information:"
-msgstr ""
+msgstr "URL informací o zranitelnostech:"
 
 #. Type: string
 #. Description
@@ -96,7 +91,6 @@ msgid ""
 "is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Suite to install packages from:"
-#~ msgstr "Ze které větve instalujete balíky?"
+"debsecan stahuje informace o zranitelnostech ze sítě. Pokud není váš systém "
+"připojen k Internetu, můžete zde zadat URL lokálního zrcadla. Ponecháte-li "
+"prázdné, použije se výchozí URL."
