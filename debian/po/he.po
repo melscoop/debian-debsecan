@@ -83,4 +83,3 @@ msgid ""
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr "debsecan מביא מידע על הרגישויות מהרשת. אם המערכת שלך אינה מחוברת לאינטנרט, תוכל להכניס כתובת של אתר מראה מקומי. אם תשאיר את שדה זה ריק, יבוצע שימוש בכתובת ברירת המחדל."
 
-
