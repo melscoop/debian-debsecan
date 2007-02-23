@@ -1,3 +1,20 @@
+debsecan (0.4.5) unstable; urgency=low
+
+  * debconf translation uppdates:
+    - Basque, by Piarres Beobide.  Closes: #411659.
+    - Catalan, by Jordà Polo.  Closes: 411992.
+    - Czecj, by Miroslav Kure.  Closes: #411556.
+    - French, by Christian Perrier.  Closes: #411616.
+    - Galician, by Jacobo Tarrio.  Closes: #411428.
+    - German, by Matthias Julius.  Closes: #411440.
+    - Hebrew, by Lior Kaplan.  Closes: #411572.
+    - Italian, by Luca Monducci.  Closes: #411478.
+    - Portuguese, by Miguel Figueiredo.  Closes: #411419.
+    - Russian, by Yuri Kozlov.  Closes: #411543.
+    - Swedish, by Daniel Nylander.  Closes: #411447.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Fri, 23 Feb 2007 08:35:10 +0100
+
 debsecan (0.4.4) unstable; urgency=high
 
   * Add the configuration file /etc/default/debsecan.  Closes: #410946.
