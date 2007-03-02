@@ -6,10 +6,15 @@ set -e
 
 case "$1" in
     configure)
-	# fix permissions on upgrade, will also run for fresh
-	# installations.
+	# If the directory is owned by root, change ownership.  This
+	# happens for fresh installations, and re-installations after
+	# removal (and purge, of course).
+	find /var/lib/debsecan -maxdepth 0 -user root | while read dir ; do
+	    chown daemon:daemon "$dir"
+	done
+
+        # Fix permissions on upgrade from ancient versions.
 	if dpkg --compare-versions "$2" '<' "0.2.1" ; then
-	    chown daemon:daemon /var/lib/debsecan
 	    if test -e /var/lib/debsecan/history ; then
 		chown daemon:daemon /var/lib/debsecan/history
 	    fi
