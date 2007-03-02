@@ -1,3 +1,10 @@
+debsecan (0.4.6) unstable; urgency=low
+
+  * Migrate /var/lib/debsecan away from root permissions unconditionally.
+    Closes: #344117 (again).
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Fri,  2 Mar 2007 21:58:39 +0100
+
 debsecan (0.4.5) unstable; urgency=low
 
   * debconf translation uppdates:
