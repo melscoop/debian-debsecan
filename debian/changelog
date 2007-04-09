@@ -1,3 +1,11 @@
+debsecan (0.4.8) unstable; urgency=high
+  
+  * Dutch translation of debconf messages,
+    by Bart Cornelis.  Closes: #415509.
+  * Add lenny suite.  Closes: #418247.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Mon,  9 Apr 2007 11:46:19 +0200
+
 debsecan (0.4.7) unstable; urgency=low
 
   * Norwegian Bokmal translation of debconf messages,
