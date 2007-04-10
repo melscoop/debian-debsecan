@@ -1,3 +1,9 @@
+debsecan (0.4.9) unstable; urgency=high
+
+  * Add lenny suite to the debconf template as well.  Closes: #418247.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Tue, 10 Apr 2007 07:16:24 +0200
+
 debsecan (0.4.8) unstable; urgency=high
   
   * Dutch translation of debconf messages,
