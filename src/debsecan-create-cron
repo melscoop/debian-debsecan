@@ -45,6 +45,7 @@ MIN=$(($RANDOM % 60))
 
 cat > "$FILE" <<EOF
 # cron entry for debsecan
+MAILTO=root
 
 $MIN * * * * daemon test -x /usr/bin/debsecan && /usr/bin/debsecan --cron
 # (Note: debsecan delays actual processing past 2:00 AM, and runs only
