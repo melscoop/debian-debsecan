@@ -21,4 +21,14 @@ A web interface to the database is available at:
 
   <http://idssi.enyo.de/tracker/>
 
- -- Florian Weimer <fw@deneb.enyo.de>, Sun, 19 Aug 2007 21:15:58 +0200
+FAQ
+---
+
+Q: How can I reduce the frequency of reports (e.g. weekly instead of
+   daily reporting)?
+
+A: Just edit /etc/cron.d/debsecan to suit your needs.  Note that
+   debsecan internally limits the number of reports per day to 1, so
+   you cannot increase the frequency of reports, only decrease it.
+
+ -- Florian Weimer <fw@deneb.enyo.de>, Sun, 19 Aug 2007 21:17:44 +0200
