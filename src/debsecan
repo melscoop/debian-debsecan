@@ -187,7 +187,8 @@ class ConfigParser:
         sys.exit(2)
 
     def parse(self, re_comment=re.compile(r'^\s*(?:#.*)?$'),
-              re_key=re.compile(r'^\s*([A-Z]+)=(.*?)\s*$')):
+              re_key=re.compile(r'^\s*([A-Z]+)=(.*?)\s*$'),
+              re_quote=re.compile(r'^"(.*)"\s*$')):
         if self.file is None:
             return
         lineno = 0
@@ -201,6 +202,11 @@ class ConfigParser:
             match = re_key.match(line)
             if match is not None:
                 (k, v) = match.groups()
+                match = re_quote.match(v)
+                if match is not None:
+                    # This is not perfect, but proper parsing is
+                    # probably not worth the effort.
+                    (v,) = match.groups()
                 self.onKey(line, lineno, k, v, '\n')
                 continue
 
