@@ -1168,7 +1168,15 @@ format_values = {
 format_values['ip'] = socket.gethostbyname(format_values['hostname'])
 
 def format_string(msg):
-    return msg % format_values
+    try:
+        return msg % format_values
+    except ValueError:
+        sys.stderr.write("error: invalid format string: %s\n" % `msg`)
+        sys.exit(2)
+    except KeyError, e:
+        sys.stderr.write("error: invalid key %s in format string %s\n"
+                         % (`e.args[0]`, `msg`))
+        sys.exit(2)
 
 # Targets
 
