@@ -1,3 +1,21 @@
+debsecan (0.4.10) unstable; urgency=low
+
+  * Support macros in MAILTO configuration variable
+    Closes: #433728.
+  * Make subject line configurable through /etc/default/debsecan.
+    Closes: #437762.
+  * Remove support for running without python-apt installed.
+    This produces more useful error messages in case python-apt is
+    installed, but unusable.  Closes: #435795.
+  * Document how to reduce the freqency of reports.  Closes: #422997.
+  * Add Brazilian Portuguese debconf templates translation,
+    by Eder L. Marques  <frolic@debian-ce.org>.  Closes: #437632.
+  * Set MAILTO=root in generated cron file.  This change is only effective
+    on new installations.  Suggested by Bastian Kleineidam.
+    Closes: #435791.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sun, 02 Sep 2007 17:27:52 +0200
+
 debsecan (0.4.9) unstable; urgency=high
 
   * Add lenny suite to the debconf template as well.  Closes: #418247.
