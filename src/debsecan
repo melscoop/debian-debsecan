@@ -1151,6 +1151,17 @@ formatters = {'bugs' : BugFormatter,
               'detail' : DetailFormatter,
               'report' : ReportFormatter}
 
+# Mini-template processing
+
+format_values = {
+    'hostname' : socket.gethostname(),
+    'fqdn' : socket.getfqdn()
+}
+format_values['ip'] = socket.gethostbyname(format_values['hostname'])
+
+def format_string(msg):
+    return msg % format_values
+
 # Targets
 
 class Target:
