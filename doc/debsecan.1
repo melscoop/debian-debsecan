@@ -88,7 +88,9 @@ with
 .BR --update-history .
 This option requires the
 .B --format report
-output format.
+output format.  The option value may contain macros, see the section
+.SM CONFIGURATION FILE MACROS
+below.
 .TP
 .B --only-fixed
 Only list vulnerabilities for which a fix is available in the archive.
@@ -130,12 +132,17 @@ Display version information and exit.
 .SH "CONFIGURATION FILE"
 The configuration file contains the following variables.  It follows
 .IR name = value
-shell syntax.
+shell syntax.  If
+.I value
+contains white space, it must be surrounded by double quotes.
+Some variables may contain macros; see the section
+.SM "CONFIGURATION FILE MACROS"
+below.
 .TP
 .B MAILTO
 Sets the email address to which reports are sent in
 .B --cron
-mode.
+mode.  May contain macros.
 .TP
 .B REPORT
 Controls whether
@@ -156,6 +163,28 @@ If empty, the built-in default is used.
 Sets the default value of the
 .B --suite
 option (see there).
+.TP
+.B SUBJECT
+Changes the subject line of reports.  May contain macros.
+.SH "CONFIGURATION FILE MACROS"
+Macro processing replaces strings of the form
+.BI %s( key )s
+with system-dependent values.  Support keys are:
+.TP
+.B hostname
+The host name on which
+.B debsecan
+runs, without the domain name part.
+.TP
+.B fqdn
+The fully-qualified domain name of the host on which
+.B debsecan
+runs.
+.TP
+.B ip
+The IP address of the host on which
+.B debsecan
+runs.  This may be inaccurate on multi-homed systems.
 .SH "CHANGING THE WHITELIST"
 You can use the
 .B --add-whitelist
