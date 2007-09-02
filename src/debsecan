@@ -370,6 +370,8 @@ def parse_cli():
     options.suite = options.suite or config.get('SUITE', None)
     if options.suite == 'GENERIC':
         options.suite = None
+    options.subject = config.get(
+        'SUBJECT', 'Debian security status of %(hostname)s')
 
     return (options, config, args)
 
@@ -1175,13 +1177,14 @@ class TargetMail(Target):
         assert options.mailto
         self.options = options
         self.sendmail = None
+        self.opt_subject = format_string(self.options.subject)
 
     def _open(self):
         self.sendmail = os.popen("/usr/sbin/sendmail -t", "w")
-        self.sendmail.write("""Subject: Debian security status of %s
+        self.sendmail.write("""Subject: %s
 To: %s
 
-""" % (socket.gethostname(), self.options.mailto))
+""" % (self.opt_subject, self.options.mailto))
 
     def write(self, line):
         if self.sendmail is None:
