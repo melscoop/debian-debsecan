@@ -1,3 +1,14 @@
+debsecan (0.4.11) unstable; urgency=low
+
+  * Acknowledge NMUs.  Closes: #490719, #465293.
+  * Add squeeze suite.  Closes: #516729.
+  * Guard against gethostbyname failure when determining the IP address.
+    Closes: #500480.
+  * Add Finnish debconf transaction by Esko Arajärvi.  Closes: #502734.
+  * Add Japanese debconf translation by Hideki Yamane.  Closes: #512986.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sat, 28 Feb 2009 19:24:04 +0100
+
 debsecan (0.4.10+nmu2) unstable; urgency=low
 
   * Non-maintainer upload.
