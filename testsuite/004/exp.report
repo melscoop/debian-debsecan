@@ -3,6 +3,6 @@ Security report based on the sid release
 *** Vulnerabilities without updates
 
 CVE-2004-0175 Directory traversal vulnerability in scp for OpenSSH...
-  <http://idssi.enyo.de/tracker/CVE-2004-0175>
+  <http://security-tracker.debian.net/tracker/CVE-2004-0175>
   - openssh-server, openssh-client (remotely exploitable)
 

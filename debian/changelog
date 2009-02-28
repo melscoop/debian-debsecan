@@ -1,3 +1,18 @@
+debsecan (0.4.10+nmu2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n bugs. Debconf translations:
+    - Turkish. Closes: #490719
+
+ -- Christian Perrier <bubulle@debian.org>  Sat, 18 Oct 2008 07:26:48 +0200
+
+debsecan (0.4.10+nmu1) unstable; urgency=low
+
+  * Non-maintainer upload with maintainer approval.
+  * Update URLs to point to security-tracker.debian.net (closes: #465293).
+
+ -- Thijs Kinkhorst <thijs@debian.org>  Sat, 26 Apr 2008 21:22:46 +0200
+
 debsecan (0.4.10) unstable; urgency=low
 
   * Support macros in MAILTO configuration variable

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: debsecan 0.4.3\n"
-"Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
-"POT-Creation-Date: 2007-02-18 16:50+0100\n"
+"Report-Msgid-Bugs-To: debsecan@packages.debian.org\n"
+"POT-Creation-Date: 2008-10-12 14:38+0200\n"
 "PO-Revision-Date: 2007-02-18 22:38+0000\n"
 "Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
@@ -45,7 +45,8 @@ msgstr ""
 #. Description
 #: ../debsecan.templates:2001
 msgid "Email address to which daily reports should be sent:"
-msgstr "Endereço de email para o qual devem ser enviados os relatórios diários:"
+msgstr ""
+"Endereço de email para o qual devem ser enviados os relatórios diários:"
 
 #. Type: select
 #. Description
@@ -91,10 +92,10 @@ msgid ""
 "is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr ""
-"O debsecan procura informação de vulnerabilidades a partir da rede. Se o "
-"seu sistema não estiver ligado à Internet, pode introduzir aqui o URL de "
-"um mirror local.  Se deixar esta opção em branco, será utilizado o URL "
-"incluido por omissão."
+"O debsecan procura informação de vulnerabilidades a partir da rede. Se o seu "
+"sistema não estiver ligado à Internet, pode introduzir aqui o URL de um "
+"mirror local.  Se deixar esta opção em branco, será utilizado o URL incluido "
+"por omissão."
 
 #~ msgid "From which suite do you want to install packges?"
 #~ msgstr "A partir de que conjunto deseja instalar pacotes?"

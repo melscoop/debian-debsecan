@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: debsecan-debconf\n"
-"Report-Msgid-Bugs-To: fw@deneb.enyo.de\n"
-"POT-Creation-Date: 2007-02-18 16:50+0100\n"
+"Report-Msgid-Bugs-To: debsecan@packages.debian.org\n"
+"POT-Creation-Date: 2008-10-12 14:38+0200\n"
 "PO-Revision-Date: 2007-02-20 12:39+0100\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Librezale <Librezale@librezale.org>\n"
@@ -28,7 +28,9 @@ msgstr "debsecan-ek eguneroko txostenak bidaltzea nahi?"
 msgid ""
 "debsecan can check the security status of the host once per day, and notify "
 "you of any changes by email."
-msgstr "debsecan-ek ostalariaren segurtasun egoera egunean behin egiazta eta egondako edozein aldaketa posta bidez ohartu dezake ."
+msgstr ""
+"debsecan-ek ostalariaren segurtasun egoera egunean behin egiazta eta "
+"egondako edozein aldaketa posta bidez ohartu dezake ."
 
 #. Type: boolean
 #. Description
@@ -36,7 +38,9 @@ msgstr "debsecan-ek ostalariaren segurtasun egoera egunean behin egiazta eta ego
 msgid ""
 "If you choose this option, debsecan will download a small file once a day.  "
 "Your package list will not be transmitted to the server."
-msgstr "Aukera hau hautatuaz debsecan-ek egunero fitxategi txiki bat deskargatuko du.  Zure pakete zerrenda ez da zerbitzarira bidaliko."
+msgstr ""
+"Aukera hau hautatuaz debsecan-ek egunero fitxategi txiki bat deskargatuko "
+"du.  Zure pakete zerrenda ez da zerbitzarira bidaliko."
 
 #. Type: string
 #. Description
@@ -56,7 +60,9 @@ msgstr "Paketeak instalaturik dauden suite orokorra:"
 msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you usually install packages."
-msgstr "Datu erabilgarriagoak erakusteko, debsecan-ek arruntean instalatzen dituzun paketeen Debian banaketa bertsioa ezagutu behar du."
+msgstr ""
+"Datu erabilgarriagoak erakusteko, debsecan-ek arruntean instalatzen dituzun "
+"paketeen Debian banaketa bertsioa ezagutu behar du."
 
 #. Type: select
 #. Description
@@ -66,7 +72,10 @@ msgid ""
 "is available.  If you specify the suite matching your sources.list "
 "configuration, information about fixed and obsolete packages will be "
 "included in email reports."
-msgstr "\"GENERIC\" (lehenespena) hautatuaz gero, debsecan ezaugarri oinarrizkoak daude erabilgarri.  sources.list konfigurazioko suitea ezarriaz konpondutako eta zaharkituriko paketeen argibideak ere agertuko dira eposta txostenetan."
+msgstr ""
+"\"GENERIC\" (lehenespena) hautatuaz gero, debsecan ezaugarri oinarrizkoak "
+"daude erabilgarri.  sources.list konfigurazioko suitea ezarriaz konpondutako "
+"eta zaharkituriko paketeen argibideak ere agertuko dira eposta txostenetan."
 
 #. Type: string
 #. Description
@@ -81,4 +90,7 @@ msgid ""
 "debsecan fetches vulnerability information from the network. If your system "
 "is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
-msgstr "debsecan-ek saretik jasotzen du ahultasunen informazioa. Zure sistema ez badago internetera konektaturik, ispilu lokal baten helbidea ipini dezakezu hemen.  Aukera hau hutsik utziaz lehenetsiriko URL-a erabiliko da."
+msgstr ""
+"debsecan-ek saretik jasotzen du ahultasunen informazioa. Zure sistema ez "
+"badago internetera konektaturik, ispilu lokal baten helbidea ipini dezakezu "
+"hemen.  Aukera hau hutsik utziaz lehenetsiriko URL-a erabiliko da."

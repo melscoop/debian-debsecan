@@ -1010,7 +1010,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
             return ' '.join(result)     # should not be reachedg
 
         def write_url(bug):
-            w("  <http://idssi.enyo.de/tracker/%s>" % bug)
+            w("  <http://security-tracker.debian.net/tracker/%s>" % bug)
 
         def scan(fix_status, new_status):
             have_obsolete = False
