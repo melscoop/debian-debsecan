@@ -265,7 +265,8 @@ def parse_cli():
                       help="sets the name of the configuration file",
                       default='/etc/default/debsecan')
     parser.add_option("--suite", type="choice",
-                      choices=['woody', 'sarge', 'etch', 'lenny', 'sid'],
+                      choices=['woody', 'sarge', 'etch', 'lenny', 'squueze',
+                               'sid'],
                       help="set the Debian suite of this installation")
     parser.add_option("--source", metavar="URL",
                       help="sets the URL for the vulnerability information")
