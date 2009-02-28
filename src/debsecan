@@ -1166,7 +1166,10 @@ format_values = {
     'hostname' : socket.gethostname(),
     'fqdn' : socket.getfqdn()
 }
-format_values['ip'] = socket.gethostbyname(format_values['hostname'])
+try:
+    format_values['ip'] = socket.gethostbyname(format_values['hostname'])
+except socket.gaierror:
+    format_values['ip'] = "unknown"
 
 def format_string(msg):
     try:
