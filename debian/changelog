@@ -1,3 +1,10 @@
+debsecan (0.4.12) unstable; urgency=low
+
+  * Fix squeeze typo.  Closes: #518276
+  * Add squeeze to the debconf templates.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Fri, 06 Mar 2009 22:16:18 +0100
+
 debsecan (0.4.11) unstable; urgency=low
 
   * Acknowledge NMUs.  Closes: #490719, #465293.
