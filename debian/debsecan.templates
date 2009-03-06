@@ -16,7 +16,7 @@ _Description: Email address to which daily reports should be sent:
 
 Template: debsecan/suite
 Type: select
-Choices: GENERIC, sarge, etch, lenny, sid
+Choices: GENERIC, sarge, etch, lenny, squeeze, sid
 Default: GENERIC
 _Description: Main suite from which packages are installed:
  To present more useful data, debsecan needs to know
