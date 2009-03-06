@@ -1,4 +1,5 @@
-debsecan.postrm.debhelper
-debsecan.substvars
-debsecan
-files
+/*.debhelper
+/*.debhelper.log
+/debsecan.substvars
+/debsecan
+/files
