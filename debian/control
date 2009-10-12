@@ -2,13 +2,13 @@ Source: debsecan
 Section: admin
 Priority: optional
 Maintainer: Florian Weimer <fw@deneb.enyo.de>
-Build-Depends: debhelper (>= 4.0.0)
+Build-Depends: debhelper (>> 5)
 Build-Depends-Indep: po-debconf
-Standards-Version: 3.7.2.0
+Standards-Version: 3.8.3
 
 Package: debsecan
 Architecture: all
-Depends: debconf | debconf-2.0, python (>= 2.3), python-apt
+Depends: debconf | debconf-2.0, python (>= 2.3), python-apt, ${misc:Depends}
 Recommends: cron, exim4 | mail-transport-agent
 Description: Debian Security Analyzer
  debsecan is a tool to generate a list of vulnerabilities which affect
