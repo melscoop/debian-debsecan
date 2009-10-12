@@ -24,7 +24,7 @@ case "$1" in
 	if test ! -z "$2" && dpkg --compare-versions "$2" '<<' '0.4.4' ; then
 	    # Install the new crontab entry which does not contain any
 	    # configuration information.
-	    /usr/sbin/debsecan-create-cron --upgrade
+	    debsecan-create-cron --upgrade
 	fi
 
 	# Create the crontab entry if it does not exist, and reporting
@@ -33,14 +33,14 @@ case "$1" in
 	# the crontab entry in that case.)
 	db_get debsecan/report
 	if test "$RET" = 'true' -a ! -r /etc/cron.d/debsecan ; then
-	    /usr/sbin/debsecan-create-cron
+	    debsecan-create-cron
 	fi
 
 	# Update the configuration file based on the data from
 	# debconf.
 	for var in REPORT SUITE MAILTO SOURCE ; do
 	    echo $var=$(db_get debsecan/$(echo $var | tr A-Z a-z); echo $RET)
-	done | /usr/bin/debsecan --update-config
+	done | debsecan --update-config
 	;;
 esac
 
