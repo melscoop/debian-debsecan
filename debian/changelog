@@ -1,3 +1,10 @@
+debsecan (0.4.13) unstable; urgency=low
+
+  * Update URL from security-tracker.debian.net to
+    security-tracker.debian.org
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Mon, 12 Oct 2009 18:23:57 +0000
+
 debsecan (0.4.12) unstable; urgency=low
 
   * Fix squeeze typo.  Closes: #518276
