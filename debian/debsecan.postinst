@@ -13,20 +13,6 @@ case "$1" in
 	    chown daemon:daemon "$dir"
 	done
 
-        # Fix permissions on upgrade from ancient versions.
-	if dpkg --compare-versions "$2" '<' "0.2.1" ; then
-	    if test -e /var/lib/debsecan/history ; then
-		chown daemon:daemon /var/lib/debsecan/history
-	    fi
-	    rm -f /var/lib/debsecan/history.new
-	fi
-
-	if test ! -z "$2" && dpkg --compare-versions "$2" '<<' '0.4.4' ; then
-	    # Install the new crontab entry which does not contain any
-	    # configuration information.
-	    debsecan-create-cron --upgrade
-	fi
-
 	# Create the crontab entry if it does not exist, and reporting
 	# has been enabled.  (If reporting is later disabled, debsecan
 	# will detected this internally, so there is no need to remove
