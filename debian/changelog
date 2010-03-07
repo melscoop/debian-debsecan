@@ -1,3 +1,18 @@
+debsecan (0.4.14) unstable; urgency=low
+
+  * Rework debconf handling.  /etc/default/debsecan is no longer a
+    conffile.  Closes: #545362, #545363
+  * Remove obsolete configuration migration code
+  * Update debconf parser for lenny, squeeze
+  * Adjust test suite and README URLs
+  * Try both version_compare and VersionCompare, for the python-apt 0.8
+    API migration.  Closes: #572086
+  * Do not use full path to command in postinst
+  * Update Standards-Version, adjust dependencies
+  * Switch debhelper compatibility level to 5
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sun, 07 Mar 2010 18:07:39 +0100
+
 debsecan (0.4.13) unstable; urgency=low
 
   * Update URL from security-tracker.debian.net to
