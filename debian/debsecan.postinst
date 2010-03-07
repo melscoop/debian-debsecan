@@ -14,7 +14,25 @@ case "$1" in
 	done
 
 	if ! test -e /etc/default/debsecan ; then
-	    cat /usr/share/debsecan/config > /etc/default/debsecan
+cat > /etc/default/debsecan <<EOF
+# Configuration file for debsecan.  Contents of this file should
+# adhere to the KEY=VALUE shell syntax.  This file may be edited by
+# debsecan's scripts, but your modifications are preserved.
+
+# If true, enable daily reports, sent by email.
+REPORT=true
+
+# For better reporting, specify the correct suite here, using the code
+# name (that is, "sid" instead of "unstable").
+SUITE=GENERIC
+
+# Mail address to which reports are sent.
+MAILTO=root
+
+# The URL from which vulnerability data is downloaded.  Empty for the
+# built-in default.
+SOURCE=
+EOF
 	fi
 
 	for var in REPORT SUITE MAILTO SOURCE ; do
