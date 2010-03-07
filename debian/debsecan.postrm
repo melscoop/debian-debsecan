@@ -4,7 +4,7 @@ set -e
 
 case "$1" in
     purge)
-	rm -f /etc/cron.d/debsecan
+	rm -f /etc/cron.d/debsecan /etc/default/debsecan
 	;;
 esac
 

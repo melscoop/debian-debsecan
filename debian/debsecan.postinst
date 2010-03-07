@@ -13,6 +13,17 @@ case "$1" in
 	    chown daemon:daemon "$dir"
 	done
 
+	if ! test -e /etc/default/debsecan ; then
+	    cat /usr/share/debsecan/config > /etc/default/debsecan
+	fi
+
+	for var in REPORT SUITE MAILTO SOURCE ; do
+	    v=$(db_get debsecan/$(echo $var | tr A-Z a-z); printf "%s" "$RET")
+	    if ! test -z "$v" ; then
+		echo "$var=\"$v\""
+	    fi
+	done | debsecan --update-config
+
 	# Create the crontab entry if it does not exist, and reporting
 	# has been enabled.  (If reporting is later disabled, debsecan
 	# will detected this internally, so there is no need to remove
@@ -22,11 +33,6 @@ case "$1" in
 	    debsecan-create-cron
 	fi
 
-	# Update the configuration file based on the data from
-	# debconf.
-	for var in REPORT SUITE MAILTO SOURCE ; do
-	    echo $var=$(db_get debsecan/$(echo $var | tr A-Z a-z); echo $RET)
-	done | debsecan --update-config
 	;;
 esac
 

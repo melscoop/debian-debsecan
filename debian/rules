@@ -39,7 +39,7 @@ install: build
 	install -D -m 0755 doc/debsecan-create-cron.8 \
 		debian/`dh_listpackages`/usr/share/man/man8/debsecan-create-cron.8
 	install -D -m 0644 debian/debsecan.conf \
-		debian/`dh_listpackages`/etc/default/debsecan
+		debian/`dh_listpackages`/usr/share/debsecan/debsecan.conf
 
 # Build architecture-independent files here.
 binary-indep: build install
