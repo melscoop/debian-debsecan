@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Florian Weimer <fw@deneb.enyo.de>
 Build-Depends: debhelper (>> 5)
 Build-Depends-Indep: po-debconf
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 
 Package: debsecan
 Architecture: all
