@@ -33,6 +33,10 @@ import zlib
 import apt_pkg
 
 apt_pkg.init()
+try:
+    version_compare = apt_pkg.version_compare
+except AttributeError:
+    version_compare = apt_pkg.VersionCompare
 
 ######################################################################
 # From debian_support in the secure-testing repository.  Needs to be
