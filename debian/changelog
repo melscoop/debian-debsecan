@@ -1,3 +1,10 @@
+debsecan (0.4.15) unstable; urgency=low
+
+  * Actually support recent python-apt versions, with thanks to Michael
+    Gilbert.  Closes: #628541.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Thu, 02 Jun 2011 14:11:56 +0200
+
 debsecan (0.4.14) unstable; urgency=low
 
   * Rework debconf handling.  /etc/default/debsecan is no longer a
