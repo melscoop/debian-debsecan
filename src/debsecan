@@ -269,7 +269,7 @@ def parse_cli():
                       help="sets the name of the configuration file",
                       default='/etc/default/debsecan')
     parser.add_option("--suite", type="choice",
-                      choices=['woody', 'sarge', 'etch', 'lenny', 'squeeze',
+                      choices=['woody', 'sarge', 'etch', 'lenny', 'squeeze', 'wheezy',
                                'sid'],
                       help="set the Debian suite of this installation")
     parser.add_option("--source", metavar="URL",
