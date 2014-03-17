@@ -5,7 +5,7 @@ import zlib
 import urllib2
 from cStringIO import StringIO
 
-URL_PREFIX = 'http://secure-testing.debian.net/debian-secure-testing/project/debsecan/release/1/'
+URL_PREFIX = 'https://security-tracker.debian.org/tracker/debsecan/release/1/'
 
 if len(sys.argv) <> 2:
     print "usage: %s SUITE"

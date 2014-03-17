@@ -459,8 +459,8 @@ class Vulnerability:
 def fetch_data(options, config):
     """Returns a dictionary PACKAGE -> LIST-OF-VULNERABILITIES."""
     url = options.source or config.get("SOURCE", None) \
-        or "http://secure-testing.debian.net/debian-secure-testing/" \
-           "project/debsecan/release/1/"
+        or "https://security-tracker.debian.org/tracker/" \
+           "debsecan/release/1/"
     if url[-1] <> "/":
         url += "/"
     if options.suite:
