@@ -1,3 +1,12 @@
+debsecan (0.4.16+nmu1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n issues. Debconf translations:
+    - Danish (Joe Hansen).  Closes: #654514
+    - Polish (Michał Kułach).  Closes: #664652
+
+ -- Christian Perrier <bubulle@debian.org>  Wed, 28 Mar 2012 07:38:20 +0200
+
 debsecan (0.4.16) unstable; urgency=low
 
   * Apply patch from Paul Wise to support wheezy

@@ -1,27 +1,29 @@
-# translation of he.po to Hebrew
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Translation of debsecan debconf templates to Polish.
+# Copyright (C) 2008
+# This file is distributed under the same license as the debsecan package.
 #
-# Lior Kaplan <kaplan@debian.org>, 2007.
+# Michał Kułach <michal.kulach@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: he\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: debsecan@packages.debian.org\n"
 "POT-Creation-Date: 2008-10-12 14:38+0200\n"
-"PO-Revision-Date: 2007-02-19 22:16+0100\n"
-"Last-Translator: Lior Kaplan <kaplan@debian.org>\n"
-"Language-Team: Hebrew <debian-hebrew-common@lists.alioth.debian.org>\n"
-"Language: he\n"
+"PO-Revision-Date: 2012-03-19 16:08+0100\n"
+"Last-Translator: Michał Kułach <michal.kulach@gmail.com>\n"
+"Language-Team: Polish <debian-l10n-polish@lists.debian.org>\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
 #. Type: boolean
 #. Description
 #: ../debsecan.templates:1001
 msgid "Do you want debsecan to send daily reports?"
-msgstr "האם אתה רוצה ש-debsecan ישלח דוחות יומיים בדואר?"
+msgstr "Czy debsecan ma wysyłać codzienne raporty?"
 
 #. Type: boolean
 #. Description
@@ -30,8 +32,8 @@ msgid ""
 "debsecan can check the security status of the host once per day, and notify "
 "you of any changes by email."
 msgstr ""
-"debsecan יכול לבדוק את מצב האבטחה של המחשב פעם ביום ולהודיע לך על השינויים "
-"דרך דואר אלקטרוני."
+"Program debsecan może sprawdzać status bezpieczeństwa hosta codziennie i "
+"powiadamiać o wszystkich zmianach za pośrednictwem poczty elektronicznej."
 
 #. Type: boolean
 #. Description
@@ -40,20 +42,20 @@ msgid ""
 "If you choose this option, debsecan will download a small file once a day.  "
 "Your package list will not be transmitted to the server."
 msgstr ""
-"אם תבחר באפשרות זאת, debsecan יוריד קובץ קטן פעם ביום. רשימת החבילות שלך לא "
-"תשלח לשרת."
+"Jeśli tak opcja zostanie wybrana, debsecan będzie codziennie pobierał "
+"niewielki plik. Lista pakietów nie będzie wysyłana na serwer."
 
 #. Type: string
 #. Description
 #: ../debsecan.templates:2001
 msgid "Email address to which daily reports should be sent:"
-msgstr "כתובת דואר אלקטרוני ש אליה ישלחו הדוחות היומיים:"
+msgstr "Adres poczty elektronicznej, na który będą wysyłane codzienne raporty:"
 
 #. Type: select
 #. Description
 #: ../debsecan.templates:3001
 msgid "Main suite from which packages are installed:"
-msgstr "המאגר הראשי ממנו מותקנות חבילות:"
+msgstr "Główny zestaw, z którego instalowane są pakiety:"
 
 #. Type: select
 #. Description
@@ -62,8 +64,8 @@ msgid ""
 "To present more useful data, debsecan needs to know the Debian release from "
 "which you usually install packages."
 msgstr ""
-"כדי להציג מידע יותר שימושי debsecan צריך להכיר את הפצת דביאן ממנה אתה בדרך "
-"כלל מתקין חבילות."
+"Aby przedstawiać użyteczniejsze dane, debsecan musi znać wydanie Debiana, z "
+"którego najczęściej są instalowane pakiety."
 
 #. Type: select
 #. Description
@@ -74,15 +76,16 @@ msgid ""
 "configuration, information about fixed and obsolete packages will be "
 "included in email reports."
 msgstr ""
-"אם תציין \"GENERIC\" (בררת המחדל), תופיע רק פונקציונליות בסיסית של debsecan. "
-"אם תציין את המאגר שתואם להגדרות בקובץ sources.list שלך, המידע על חבילות "
-"מתוקנות או ישנות יכלל בדוחות הדואר."
+"Jeśli zostanie wpisane \"GENERIC\" (domyślnie), dostępne będą tylko "
+"podstawowe funkcje debsecan. W przypadku wpisania zestawu pasującego do "
+"bieżącej konfiguracji sources.list, w wiadomościach będą załączone "
+"informacje o naprawionych i przestarzałych pakietach."
 
 #. Type: string
 #. Description
 #: ../debsecan.templates:4001
 msgid "URL of vulnerability information:"
-msgstr "כתובת של מידע על הרגישויות:"
+msgstr "URL informacji o zagrożeniach bezpieczeństwa:"
 
 #. Type: string
 #. Description
@@ -92,6 +95,7 @@ msgid ""
 "is not connected to the Internet, you can enter the URL of a local mirror "
 "here.  If you leave this option empty, the built-in default URL is used."
 msgstr ""
-"debsecan מביא מידע על הרגישויות מהרשת. אם המערכת שלך אינה מחוברת לאינטנרט, "
-"תוכל להכניס כתובת של אתר מראה מקומי. אם תשאיר את שדה זה ריק, יבוצע שימוש "
-"בכתובת ברירת המחדל."
+"Program debsecan może pobierać informacje o błędach bezpieczeństwa z sieci. "
+"Jeśli komputer nie jest podłączony do Internetu, można podać URL lokalnego "
+"serwera lustrzanego. W przypadku pozostawienia pola pustego, zostanie użyty "
+"wbudowany, domyślny URL."
