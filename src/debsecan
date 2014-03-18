@@ -191,7 +191,7 @@ class ConfigParser:
         sys.exit(2)
 
     def parse(self, re_comment=re.compile(r'^\s*(?:#.*)?$'),
-              re_key=re.compile(r'^\s*([A-Z]+)=(.*?)\s*$'),
+              re_key=re.compile(r'^\s*([A-Z_]+)=(.*?)\s*$'),
               re_quote=re.compile(r'^"(.*)"\s*$')):
         if self.file is None:
             return
