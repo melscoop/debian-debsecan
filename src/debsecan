@@ -186,8 +186,8 @@ class ConfigParser:
         pass
 
     def onError(self, line, number):
-        sys.stderr.write("%s:%d: invalid configuration file syntax"
-                         % (line, number))
+        sys.stderr.write("%s:%d: invalid configuration file syntax\n"
+                         % (self.name, number))
         sys.exit(2)
 
     def parse(self, re_comment=re.compile(r'^\s*(?:#.*)?$'),
@@ -214,7 +214,7 @@ class ConfigParser:
                 self.onKey(line, lineno, k, v, '\n')
                 continue
 
-            onError(line, lineno)
+            self.onError(line, lineno)
 
 def read_config(name, file=None):
     """Read the configuration file NAME into a dictionary and return it."""
