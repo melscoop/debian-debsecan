@@ -1,3 +1,13 @@
+debsecan (0.4.17) unstable; urgency=low
+
+  * Apply patch from Stephen Kitt <skitt@debian.org> to support jessie.
+    Closes: #709562
+  * Apply patch from Paul Wise <pabs@debian.org> to switch the default
+    data source URL to security-tracker.debian.org.
+  * Implement https:// checking.
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Tue, 18 Mar 2014 10:18:37 +0100
+
 debsecan (0.4.16+nmu1) unstable; urgency=low
 
   * Non-maintainer upload.
