@@ -109,6 +109,9 @@ not just false positives.
 Change the name of the history file used by
 .BR "--format report" .
 .TP
+.B --disable-https-check
+Turn off certificate validation for HTTPS.
+.TP
 .B --update-history
 Update the vulnerability status information after reporting it using
 .BR "--format report" .
@@ -166,6 +169,11 @@ option (see there).
 .TP
 .B SUBJECT
 Changes the subject line of reports.  May contain macros.
+.TP
+.B DISABLE_HTTPS_CHECK
+Disables HTTPS certificate checking, just like the
+.B --disable-https-check
+command line option.
 .SH "CONFIGURATION FILE MACROS"
 Macro processing replaces strings of the form
 .BI %s( key )s

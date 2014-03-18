@@ -260,6 +260,50 @@ def update_config(name):
     finally:
         conf.close()
 
+def patch_https_implementation():
+    "Add certificate and host name checking to the standard library."
+
+    import ssl
+    from inspect import stack
+    from httplib import HTTPConnection
+
+    wrap_socket_orig = ssl.wrap_socket
+    def wrap_socket(sock, *args, **kwargs):
+        kwargs["ca_certs"] = "/etc/ssl/certs/ca-certificates.crt"
+        kwargs["cert_reqs"] = ssl.CERT_REQUIRED
+        kwargs["ciphers"] = "HIGH:!aNULL:!SRP:!PSK"
+        kwargs["do_handshake_on_connect"] = True
+        kwargs["suppress_ragged_eofs"] = False
+        secsock = wrap_socket_orig(sock, *args, **kwargs)
+
+        # Implement host name check for httplib
+        cert = secsock.getpeercert()
+        caller = stack()[1]
+        caller_locals = caller[0].f_locals
+        try:
+            caller_self = caller_locals["self"]
+        except KeyError:
+            caller_self = None
+        if caller_self is not None and isinstance(caller_self, HTTPConnection):
+            expected_host = caller_self.host
+            try:
+                subject_dn = cert["subject"]
+            except KeyError:
+                raise IOError("invalid X.509 certificate for " + expected_host)
+            found = False
+            expected = (("commonName", expected_host),)
+            for entry in subject_dn:
+                if entry == expected:
+                    found = True
+            if not found:
+                raise IOError("X.509 certificate does not match host name " +
+                              expected_host)
+        else:
+            raise IOError("ssl.wrap_socket called from unexpected place")
+
+        return secsock
+    ssl.wrap_socket = wrap_socket
+
 # Command line parser
 
 def parse_cli():
@@ -311,6 +355,9 @@ def parse_cli():
     parser.add_option("--show-whitelist", action="store_true",
                       dest="whitelist_show",
                       help="display entries on the whitelist")
+    parser.add_option("--disable-https-check", action="store_true",
+                      dest="disable_https_check",
+                      help="disable certificate checks")
     parser.add_option("--update-config", action="store_true",
                       dest="update_config", help=None)
     (options, args) = parser.parse_args()
@@ -378,11 +425,17 @@ def parse_cli():
         options.mailto = config.get('MAILTO', '')
         if options.mailto == '':
             options.mailto = 'root'
+    options.disable_https_check = options.disable_https_check or \
+        (config.get("DISABLE_HTTPS_CHECK", False) in
+         ['yes', 'true', 'True', '1', 'on'])
     options.suite = options.suite or config.get('SUITE', None)
     if options.suite == 'GENERIC':
         options.suite = None
     options.subject = config.get(
         'SUBJECT', 'Debian security status of %(hostname)s')
+
+    if not options.disable_https_check:
+        patch_https_implementation()
 
     return (options, config, args)
 
