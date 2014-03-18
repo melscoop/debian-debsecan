@@ -264,14 +264,18 @@ def patch_https_implementation():
     "Add certificate and host name checking to the standard library."
 
     import ssl
+    from inspect import getargspec
     from inspect import stack
     from httplib import HTTPConnection
 
     wrap_socket_orig = ssl.wrap_socket
+    set_ciphers = "ciphers" in getargspec(wrap_socket_orig)[0]
+
     def wrap_socket(sock, *args, **kwargs):
         kwargs["ca_certs"] = "/etc/ssl/certs/ca-certificates.crt"
         kwargs["cert_reqs"] = ssl.CERT_REQUIRED
-        kwargs["ciphers"] = "HIGH:!aNULL:!SRP:!PSK"
+        if set_ciphers:
+            kwargs["ciphers"] = "HIGH:!aNULL:!SRP:!PSK"
         kwargs["do_handshake_on_connect"] = True
         kwargs["suppress_ragged_eofs"] = False
         secsock = wrap_socket_orig(sock, *args, **kwargs)
