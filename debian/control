@@ -8,7 +8,8 @@ Standards-Version: 3.8.4
 
 Package: debsecan
 Architecture: all
-Depends: debconf | debconf-2.0, python (>= 2.3), python-apt, ${misc:Depends}
+Depends: debconf | debconf-2.0, python (>= 2.3), python-apt, ${misc:Depends},
+ ca-certificates
 Recommends: cron, exim4 | mail-transport-agent
 Description: Debian Security Analyzer
  debsecan is a tool to generate a list of vulnerabilities which affect
