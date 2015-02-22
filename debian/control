@@ -5,7 +5,7 @@ Maintainer: Florian Weimer <fw@deneb.enyo.de>
 Build-Depends: debhelper (>> 5)
 Build-Depends-Indep: po-debconf
 Standards-Version: 3.8.4
-Vcs-Git: http://git.enyo.de/fw/debian/debsecan.git
+Vcs-Git: https://gitorious.org/debsecan/debsecan.git
 
 Package: debsecan
 Architecture: all
