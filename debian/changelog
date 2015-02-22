@@ -1,3 +1,14 @@
+debsecan (0.4.18) unstable; urgency=low
+
+  * Increase compatibility with Python 2.6 in squeeze.  The
+    ssl.wrap_socket function does not take a "ciphers" argument.
+  * Add dependency on ca-certificates
+  * Use https:// URLs everywhere.  Closes: #749421
+  * Add Vcs-Git heheader.  Closes: #761344
+  * Move primary repository to Gitorious.  Closes: #778798
+
+ -- Florian Weimer <fw@deneb.enyo.de>  Sun, 22 Feb 2015 20:09:52 +0100
+
 debsecan (0.4.17) unstable; urgency=low
 
   * Apply patch from Stephen Kitt <skitt@debian.org> to support jessie.
