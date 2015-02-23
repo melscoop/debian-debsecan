@@ -3,9 +3,10 @@
 set -e
 
 export LC_ALL=C
+export PYTHONPATH=..
 
 url="file://$(pwd)"
-debsecan="python ../src/debsecan"
+debsecan="python -m debsecan.__init__"
 
 # Check that python-apt is installed.
 python -c "import apt_pkg"
