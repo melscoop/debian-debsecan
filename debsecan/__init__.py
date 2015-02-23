@@ -84,7 +84,7 @@ class Version:
     def __init__(self, version):
         """Creates a new Version object."""
         assert type(version) == types.StringType, `version`
-        assert version <> ""
+        assert version != ""
         self.__asString = version
 
     def __str__(self):
@@ -253,7 +253,7 @@ def update_config(name):
 
         def onKey(self, line, lineno, key, value, trailer):
             if new_config.has_key(key):
-                if new_config[key] <> value:
+                if new_config[key] != value:
                     new_file.append("%s=%s%s"
                                     % (key, new_config[key], trailer))
                 else:
@@ -266,7 +266,7 @@ def update_config(name):
     remaining = new_config.keys()
     remaining.sort()
     if remaining:
-        if remaining[-1] <> "\n":
+        if remaining[-1] != "\n":
             new_file.append("\n")
         for k in remaining:
             new_file.append("%s=%s\n" % (k, new_config[k]))
@@ -434,13 +434,13 @@ def parse_cli():
     if options.no_obsolete and not options.suite:
         sys.stderr.write("error: --no-obsolete requires --suite\n")
         sys.exit(1)
-    if options.update_history and options.format <> 'report':
+    if options.update_history and options.format != 'report':
         sys.stderr.write("error: --update-history requires report format\n")
         sys.exit(1)
-    if options.cron and options.format <> 'report':
+    if options.cron and options.format != 'report':
         sys.stderr.write("error: --cron requires report format\n")
         sys.exit(1)
-    if options.mailto and options.format <> 'report':
+    if options.mailto and options.format != 'report':
         sys.stderr.write("error: --mailto requires report format\n")
         sys.exit(1)
     options.need_history = options.format == 'report'
@@ -542,7 +542,7 @@ def fetch_data(options, config):
     url = options.source or config.get("SOURCE", None) \
         or "https://security-tracker.debian.org/tracker/" \
            "debsecan/release/1/"
-    if url[-1] <> "/":
+    if url[-1] != "/":
         url += "/"
     if options.suite:
         url += options.suite
@@ -584,7 +584,7 @@ def fetch_data(options, config):
         else:
             break
     data = StringIO(zlib.decompress(''.join(data)))
-    if data.readline() <> "VERSION 1\n":
+    if data.readline() != "VERSION 1\n":
         sys.stderr.write("error: server sends data in unknown format\n")
         sys.exit(1)
 
@@ -710,7 +710,7 @@ class Whitelist:
         if name and os.path.exists(name):
             src = safe_open(name)
             line = src.readline()
-            if line <> 'VERSION 0\n':
+            if line != 'VERSION 0\n':
                 raise SyntaxError, "invalid whitelist file, got: " + `line`
             for line in src:
                 if line[-1] == '\n':
@@ -1046,7 +1046,7 @@ class ReportFormatter(Formatter):
         since the last run."""
 
         for (k, v) in self.new_history.items():
-            if (not self.history.known(k)) or self.history.fixed(k) <> v:
+            if (not self.history.known(k)) or self.history.fixed(k) != v:
                 return True
         return len(self.fixed_bugs.keys()) > 0
 
@@ -1144,7 +1144,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                     else:
                         is_new = (not self.history.known(bug_package)) \
                             or self.history.fixed(bug_package)
-                    if v.fix_available <> fix_status or is_new <> new_status:
+                    if v.fix_available != fix_status or is_new != new_status:
                         continue
 
                     if first_bug:
@@ -1425,12 +1425,13 @@ def rate_system(target, options, vulns, history):
     formatter.finish()
     target.finish()
 
-if __name__ == "__main__":
+
+def main():
     (options, config, args) = parse_cli()
     if (options.update_config):
         update_config(options.config)
         sys.exit(0)
-    if options.cron and config.get("REPORT", "true") <> "true":
+    if options.cron and config.get("REPORT", "true") != "true":
         # Do nothing in cron mode if reporting is disabled.
         sys.exit(0)
     if options.need_history:
@@ -1444,3 +1445,7 @@ if __name__ == "__main__":
     else:
         target = TargetPrint(options)
     rate_system(target, options, fetch_data(options, config), history)
+
+
+if __name__ == "__main__":
+    main()
