@@ -11,4 +11,8 @@ quickbuild: test
 
 release: test clean
 	gbp dch --ignore-branch --debian-tag="v%(version)s" --urgency=low --release
+	$(eval VERSION := $(shell dpkg-parsechangelog -S Version))
+	echo "__version__ = '$(VERSION)'" > debsecan/_version.py
+	git commit debsecan/_version.py -m "Version $(VERSION)"
+	git tag "$(VERSION)"
 	gbp buildpackage --git-tag
