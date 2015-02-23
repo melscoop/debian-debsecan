@@ -16,3 +16,6 @@ release: test clean
 	git commit debsecan/_version.py -m "Version $(VERSION)"
 	git tag "$(VERSION)"
 	gbp buildpackage --git-tag
+
+unittest:
+	PYTHONPATH=. py.test --cov debsecan --cov-report term-missing
