@@ -44,6 +44,7 @@ except AttributeError:
 # dependency, and make it easy to run the script even when it is not
 # installed on the system.)
 
+global options
 
 class ParseError(Exception):
 
@@ -1427,7 +1428,8 @@ def rate_system(target, options, vulns, history):
 
 
 def main():
-    (options, config, args) = parse_cli()
+    global options
+    options, config, args = parse_cli()
     if (options.update_config):
         update_config(options.config)
         sys.exit(0)
