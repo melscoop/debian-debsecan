@@ -78,7 +78,7 @@ class ParseError(Exception):
         file.flush()
 
 
-class Version:
+class Version(object):
 
     """Version class which uses the original APT comparison algorithm."""
 
@@ -98,7 +98,7 @@ class Version:
         return version_compare(self.__asString, other.__asString)
 
 
-class PackageFile:
+class PackageFile(object):
 
     """A Debian package file.
 
@@ -179,7 +179,7 @@ def safe_open(name, mode="r"):
 # Configuration file parser
 
 
-class ConfigParser:
+class ConfigParser(object):
 
     def __init__(self, name, file=None):
         self.name = name
@@ -468,7 +468,7 @@ def parse_cli():
 # Vulnerabilities
 
 
-class Vulnerability:
+class Vulnerability(object):
 
     """Stores a vulnerability name/package name combination."""
 
@@ -632,7 +632,7 @@ def fetch_data(options, config):
 # Previous state (for incremental reporting)
 
 
-class History:
+class History(object):
 
     def __init__(self, options):
         self.options = options
@@ -698,7 +698,7 @@ class History:
 # Whitelisting vulnerabilities
 
 
-class Whitelist:
+class Whitelist(object):
 
     def __init__(self, name):
         """Read a whitelist from disk.
@@ -836,7 +836,7 @@ def whitelist_show(options, args):
 # Classes for output formatting
 
 
-class Formatter:
+class Formatter(object):
 
     def __init__(self, target, options, history):
         self.target = target
@@ -1306,7 +1306,7 @@ def format_string(msg):
 # Targets
 
 
-class Target:
+class Target(object):
 
     def __init__(self, options):
         pass
