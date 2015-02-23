@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
-VERSION = "0.4"
+from _version import __version__
 
 import copy
 from cStringIO import StringIO
@@ -549,7 +549,7 @@ def fetch_data(options, config):
     else:
         url += 'GENERIC'
     r = urllib2.Request(url)
-    r.add_header('User-Agent', 'debsecan/' + VERSION)
+    r.add_header('User-Agent', 'debsecan/' + __version__)
     try:
         u = urllib2.urlopen(r)
         # In cron mode, we suppress almost all errors because we
