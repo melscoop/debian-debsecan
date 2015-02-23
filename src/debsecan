@@ -38,13 +38,15 @@ try:
 except AttributeError:
     version_compare = apt_pkg.VersionCompare
 
-######################################################################
+#
 # From debian_support in the secure-testing repository.  Needs to be
 # kept in sync manually.  (We duplicate here to avoid a library
 # dependency, and make it easy to run the script even when it is not
 # installed on the system.)
 
+
 class ParseError(Exception):
+
     """An exception which is used to signal a parse failure.
 
     Attributes:
@@ -74,8 +76,11 @@ class ParseError(Exception):
         file.write("%s:%d: %s\n" % (self.filename, self.lineno, self.msg))
         file.flush()
 
+
 class Version:
+
     """Version class which uses the original APT comparison algorithm."""
+
     def __init__(self, version):
         """Creates a new Version object."""
         assert type(version) == types.StringType, `version`
@@ -91,7 +96,9 @@ class Version:
     def __cmp__(self, other):
         return version_compare(self.__asString, other.__asString)
 
+
 class PackageFile:
+
     """A Debian package file.
 
     Objects of this class can be used to read Debian's Source and
@@ -155,20 +162,24 @@ class PackageFile:
         raise ParseError(self.name, lineno, msg)
 
 # End of code from debian_support
-######################################################################
+#
 
 # General support routines
+
 
 def safe_open(name, mode="r"):
     try:
         return file(name, mode)
     except IOError, e:
-        sys.stdout.write("error: could not open %s: %s\n" % (`name`, e.strerror))
+        sys.stdout.write(
+            "error: could not open %s: %s\n" % (`name`, e.strerror))
         sys.exit(2)
 
 # Configuration file parser
 
+
 class ConfigParser:
+
     def __init__(self, name, file=None):
         self.name = name
         if file is None:
@@ -216,23 +227,30 @@ class ConfigParser:
 
             self.onError(line, lineno)
 
+
 def read_config(name, file=None):
     """Read the configuration file NAME into a dictionary and return it."""
     config = {}
+
     class Parser(ConfigParser):
+
         def onKey(self, line, number, key, value, trailer):
             config[key] = value
     Parser(name, file).parse()
     return config
+
 
 def update_config(name):
     """Update the configuration file NAME with data from standard input."""
     new_config = read_config('<stdin>', sys.stdin)
 
     new_file = []
+
     class Parser(ConfigParser):
+
         def onComment(self, line, lineno):
             new_file.append(line)
+
         def onKey(self, line, lineno, key, value, trailer):
             if new_config.has_key(key):
                 if new_config[key] <> value:
@@ -259,6 +277,7 @@ def update_config(name):
             conf.write(line)
     finally:
         conf.close()
+
 
 def patch_https_implementation():
     "Add certificate and host name checking to the standard library."
@@ -310,6 +329,7 @@ def patch_https_implementation():
 
 # Command line parser
 
+
 def parse_cli():
     """Reads sys.argv and returns an options object."""
     parser = OptionParser(usage="%prog OPTIONS...")
@@ -317,7 +337,8 @@ def parse_cli():
                       help="sets the name of the configuration file",
                       default='/etc/default/debsecan')
     parser.add_option("--suite", type="choice",
-                      choices=['woody', 'sarge', 'etch', 'lenny', 'squeeze', 'wheezy',
+                      choices=[
+                          'woody', 'sarge', 'etch', 'lenny', 'squeeze', 'wheezy',
                                'jessie', 'sid'],
                       help="set the Debian suite of this installation")
     parser.add_option("--source", metavar="URL",
@@ -331,9 +352,9 @@ def parse_cli():
                       default="summary",
                       help="change output format")
     parser.add_option("--only-fixed", action="store_true", dest="only_fixed",
-                help="list only vulnerabilities for which a fix is available")
+                      help="list only vulnerabilities for which a fix is available")
     parser.add_option("--no-obsolete", action="store_true", dest="no_obsolete",
-                help="do not list obsolete packages (not recommend)")
+                      help="do not list obsolete packages (not recommend)")
     parser.add_option("--history", default="/var/lib/debsecan/history",
                       metavar="NAME",
                       help="sets the file name of debsecan's internal status "
@@ -389,7 +410,7 @@ def parse_cli():
                          # always present.
                          "history", "status", "format", "line_length"):
                 sys.stderr.write(
-        "error: when editing the whitelist, no other options are allowed\n")
+                    "error: when editing the whitelist, no other options are allowed\n")
                 sys.exit(1)
 
     if options.whitelist_add:
@@ -445,18 +466,20 @@ def parse_cli():
 
 # Vulnerabilities
 
+
 class Vulnerability:
+
     """Stores a vulnerability name/package name combination."""
 
-    urgency_conversion = {' ' : '',
-                        'L' : 'low',
-                        'M' : 'medium',
-                        'H' : 'high'}
+    urgency_conversion = {' ': '',
+                          'L': 'low',
+                          'M': 'medium',
+                          'H': 'high'}
 
     def __init__(self, vuln_names, str):
         """Creates a new vulnerability object from a string."""
         (package, vnum, flags, unstable_version, other_versions) \
-                  = str.split(',', 4)
+            = str.split(',', 4)
         vnum = int(vnum)
         self.bug = vuln_names[vnum][0]
         self.package = package
@@ -468,9 +491,9 @@ class Vulnerability:
         self.description = vuln_names[vnum][1]
         self.binary_package = flags[0] == 'B'
         self.urgency = self.urgency_conversion[flags[1]]
-        self.remote = {'?' : None,
-                       'R' : True,
-                       ' ' : False}[flags[2]]
+        self.remote = {'?': None,
+                       'R': True,
+                       ' ': False}[flags[2]]
         self.fix_available = flags[3] == 'F'
 
     def is_vulnerable(self, (bin_pkg, bin_ver), (src_pkg, src_ver)):
@@ -485,7 +508,7 @@ class Vulnerability:
         elif src_pkg == self.package:
             if self.unstable_version:
                 return src_ver < self.unstable_version \
-                       and src_ver not in self.other_versions
+                    and src_ver not in self.other_versions
             else:
                 return src_ver not in self.other_versions
         else:
@@ -512,6 +535,7 @@ class Vulnerability:
             else:
                 self.unstable_version = None
             self.other_versions = map(Version, self.other_versions)
+
 
 def fetch_data(options, config):
     """Returns a dictionary PACKAGE -> LIST-OF-VULNERABILITIES."""
@@ -606,7 +630,9 @@ def fetch_data(options, config):
 
 # Previous state (for incremental reporting)
 
+
 class History:
+
     def __init__(self, options):
         self.options = options
         self.last_updated = 86400
@@ -622,6 +648,7 @@ class History:
         if self.options.cron:
             old = time.localtime(self.last_updated)
             now = time.localtime()
+
             def ymd(t):
                 return (t.tm_year, t.tm_mon, t.tm_mday)
             if ymd(old) == ymd(now):
@@ -669,7 +696,9 @@ class History:
 
 # Whitelisting vulnerabilities
 
+
 class Whitelist:
+
     def __init__(self, name):
         """Read a whitelist from disk.
 
@@ -737,7 +766,7 @@ class Whitelist:
     def check(self, bug, package):
         """Returns true if the bug/package pair is whitelisted."""
         return self.bug_dict.has_key(bug) \
-               or self.bug_package_dict.has_key((bug, package))
+            or self.bug_package_dict.has_key((bug, package))
 
     def update(self):
         """Write the whitelist file back to disk, if the data has changed."""
@@ -767,6 +796,7 @@ class Whitelist:
         for line in l:
             file.write(line)
 
+
 def __whitelist_edit(options, args, method):
     w = Whitelist(options.whitelist)
     while args:
@@ -790,40 +820,50 @@ def __whitelist_edit(options, args, method):
             method(w, bug, None)
     w.update()
 
+
 def whitelist_add(options, args):
     __whitelist_edit(options, args, lambda w, bug, pkg: w.add(bug, pkg))
+
+
 def whitelist_remove(options, args):
     __whitelist_edit(options, args, lambda w, bug, pkg: w.remove(bug, pkg))
+
+
 def whitelist_show(options, args):
     Whitelist(options.whitelist).show(sys.stdout)
 
 # Classes for output formatting
 
+
 class Formatter:
+
     def __init__(self, target, options, history):
         self.target = target
         self.options = options
         self.history = history
         self.whitelist = Whitelist(self.options.whitelist)
         self._invalid_versions = False
+
     def invalid_version(self, package, version):
         sys.stdout.flush()
         sys.stderr.write("error: invalid version %s of package %s\n"
                          % (version, package))
         if not self._invalid_versions:
             sys.stderr.write(
-    "error: install the python-apt package for invalid versions support\n")
+                "error: install the python-apt package for invalid versions support\n")
             self._invalid_versions = True
         sys.stderr.flush()
+
     def invalid_source_version(self, package, version):
         sys.stdout.flush()
         sys.stderr.write("error: invalid source version %s of package %s\n"
                          % (version, package))
         if not self._invalid_versions:
             sys.stderr.write(
-    "error: install the python-apt package for invalid versions support\n")
+                "error: install the python-apt package for invalid versions support\n")
             self._invalid_versions = True
         sys.stderr.flush()
+
     def maybe_record(self, v, bp, sp):
         """Invoke self.record, honouring --only-fixed.  Can be
         overridden to implement a different form of --only-fixed
@@ -834,34 +874,45 @@ class Formatter:
             if self.options.no_obsolete and v.obsolete(bp[0]):
                 return
             self.record(v, bp, sp)
+
     def finish(self):
         pass
 
+
 class BugFormatter(Formatter):
+
     def __init__(self, target, options, history):
         Formatter.__init__(self, target, options, history)
         self.bugs = {}
+
     def record(self, v, bp, sp):
         self.bugs[v.bug] = 1
+
     def finish(self):
         bugs = self.bugs.keys()
         bugs.sort()
         for b in bugs:
             self.target.write(b)
 
+
 class PackageFormatter(Formatter):
+
     def __init__(self, target, options, history):
         Formatter.__init__(self, target, options, history)
         self.packages = {}
+
     def record(self, v, (bin_name, bin_version), sp):
         self.packages[bin_name] = 1
+
     def finish(self):
         packages = self.packages.keys()
         packages.sort()
         for p in packages:
             self.target.write(p)
 
+
 class SummaryFormatter(Formatter):
+
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
         notes = []
@@ -879,12 +930,16 @@ class SummaryFormatter(Formatter):
         else:
             self.target.write("%s %s" % (v.bug, bin_name))
 
+
 class SimpleFormatter(Formatter):
+
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
         self.target.write("%s %s" % (v.bug, bin_name))
 
+
 class DetailFormatter(Formatter):
+
     def record(self, v,
                (bin_name, bin_version), (src_name, src_version)):
         notes = []
@@ -922,7 +977,9 @@ class DetailFormatter(Formatter):
                               % self.options.suite)
         self.target.write("")
 
+
 class ReportFormatter(Formatter):
+
     def __init__(self, target, options, history):
         Formatter.__init__(self, target, options, history)
         self.bugs = {}
@@ -980,6 +1037,7 @@ class ReportFormatter(Formatter):
 
     def invalid_version(self, package, version):
         self.invalid.append(package)
+
     def invalid_source_version(self, package, version):
         self.invalid.append(package)
 
@@ -1005,7 +1063,7 @@ class ReportFormatter(Formatter):
             w("Security report based on general data")
             w("")
             w(
-"""If you specify a proper suite, this report will include information
+                """If you specify a proper suite, this report will include information
 regarding available security updates and obsolete packages.  To set
 the correct suite, run "dpkg-reconfigure debsecan" as root.""")
         w("")
@@ -1038,8 +1096,8 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
             w("")
 
         def score_urgency(urgency):
-            return {'high' : 100,
-                    'medium' : 50,
+            return {'high': 100,
+                    'medium': 50,
                     }.get(urgency, 0)
 
         def vuln_to_notes(v):
@@ -1085,7 +1143,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                         is_new = not self.history.fixed(bug_package)
                     else:
                         is_new = (not self.history.known(bug_package)) \
-                                 or self.history.fixed(bug_package)
+                            or self.history.fixed(bug_package)
                     if v.fix_available <> fix_status or is_new <> new_status:
                         continue
 
@@ -1123,7 +1181,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                             # Wrap the package list if the line length
                             # is exceeded.
                             if len(line) + len(pkg) + 3 \
-                                   > self.options.line_length:
+                                    > self.options.line_length:
                                 w(line + ',')
                                 line = indent + pkg
                                 comma_needed = True
@@ -1135,7 +1193,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
                                 line += pkg
                         if note_text:
                             if len(line) + len(note_text) + 3 \
-                                   > self.options.line_length:
+                                    > self.options.line_length:
                                 w(line)
                                 w("%s(%s)" % (indent, note_text))
                             else:
@@ -1146,7 +1204,7 @@ the correct suite, run "dpkg-reconfigure debsecan" as root.""")
 
             if have_obsolete:
                 w(
-"""Note that some packages were marked as obsolete.  To deal with the
+                    """Note that some packages were marked as obsolete.  To deal with the
 vulnerabilities in them, you need to remove them.  Before you can do
 this, you may have to upgrade other packages depending on them.
 """)
@@ -1198,7 +1256,7 @@ this, you may have to upgrade other packages depending on them.
         if not self._bug_found:
             if self.options.only_fixed:
                 w(
-"""No known vulnerabilities for which updates are available were found
+                    """No known vulnerabilities for which updates are available were found
 on the system.""")
             else:
                 w("No known vulnerabilities were found on the system.")
@@ -1208,29 +1266,30 @@ on the system.""")
         else:
             if self._whitelisted:
                 w(
-"""Note that some vulnerablities have been whitelisted and are not included
+                    """Note that some vulnerablities have been whitelisted and are not included
 in this report.""")
 
         if options.update_history:
             self._write_history(self.options.history)
 
-formatters = {'bugs' : BugFormatter,
-              'packages' : PackageFormatter,
-              'summary' : SummaryFormatter,
-              'simple' : SimpleFormatter,
-              'detail' : DetailFormatter,
-              'report' : ReportFormatter}
+formatters = {'bugs': BugFormatter,
+              'packages': PackageFormatter,
+              'summary': SummaryFormatter,
+              'simple': SimpleFormatter,
+              'detail': DetailFormatter,
+              'report': ReportFormatter}
 
 # Mini-template processing
 
 format_values = {
-    'hostname' : socket.gethostname(),
-    'fqdn' : socket.getfqdn()
+    'hostname': socket.gethostname(),
+    'fqdn': socket.getfqdn()
 }
 try:
     format_values['ip'] = socket.gethostbyname(format_values['hostname'])
 except socket.gaierror:
     format_values['ip'] = "unknown"
+
 
 def format_string(msg):
     try:
@@ -1245,13 +1304,18 @@ def format_string(msg):
 
 # Targets
 
+
 class Target:
+
     def __init__(self, options):
         pass
+
     def finish(self):
         pass
 
+
 class TargetMail(Target):
+
     def __init__(self, options):
         assert options.mailto
         self.options = options
@@ -1279,7 +1343,9 @@ To: %s
         if self.sendmail is not None:
             self.sendmail.close()
 
+
 class TargetPrint(Target):
+
     def write(self, line):
         print line
 
@@ -1292,7 +1358,7 @@ def rate_system(target, options, vulns, history):
     vulns: list of vulnerabiltiies"""
     packages = PackageFile(options.status)
     re_source = re.compile\
-                (r'^([a-zA-Z0-9.+-]+)(?:\s+\((\S+)\))?$')
+        (r'^([a-zA-Z0-9.+-]+)(?:\s+\((\S+)\))?$')
     formatter = formatters[options.format](target, options, history)
     for pkg in packages:
         pkg_name = None
@@ -1318,16 +1384,16 @@ def rate_system(target, options, vulns, history):
                 (pkg_source, pkg_source_version) = match.groups()
         if pkg_name is None:
             raise SyntaxError\
-                  ("package record does not contain package name")
+                ("package record does not contain package name")
         if pkg_status is None:
             raise SyntaxError\
-                  ("package record does not contain status")
+                ("package record does not contain status")
         if 'installed' not in pkg_status.split(' '):
             # Package is not installed.
             continue
         if pkg_version is None:
             raise SyntaxError\
-                  ("package record does not contain version information")
+                ("package record does not contain version information")
         if pkg_source_version is None:
             pkg_source_version = pkg_version
         if not pkg_source:
@@ -1354,7 +1420,7 @@ def rate_system(target, options, vulns, history):
         for v in vlist:
             bp = (pkg_name, pkg_version)
             sp = (pkg_source, pkg_source_version)
-            if v.is_vulnerable (bp, sp):
+            if v.is_vulnerable(bp, sp):
                 formatter.maybe_record(v, bp, sp)
     formatter.finish()
     target.finish()
