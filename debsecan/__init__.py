@@ -44,8 +44,6 @@ except AttributeError:
 # dependency, and make it easy to run the script even when it is not
 # installed on the system.)
 
-global options
-
 
 class ParseError(Exception):
 
@@ -330,7 +328,34 @@ def patch_https_implementation():
         return secsock
     ssl.wrap_socket = wrap_socket
 
+
 # Command line parser
+
+def check_whitelist_options(options):
+    """Check the whitelist options.  They conflict with everything
+    else."""
+    count = 0
+    for x in (options.whitelist_add, options.whitelist_remove,
+              options.whitelist_show):
+        if x:
+            count += 1
+    if count == 0:
+        return
+    if count > 1:
+        sys.stderr.write(
+            "error: at most one whitelist option may be specified\n")
+        sys.exit(1)
+
+    for (k, v) in options.__dict__.items():
+        if isinstance(v, types.MethodType) or v is None:
+            continue
+        if k not in ("whitelist", "whitelist_add", "whitelist_remove",
+                     # The following options have defaults and are
+                     # always present.
+                     "history", "status", "format", "line_length"):
+            sys.stderr.write("error: when editing the whitelist, no"
+                             " other options are allowed\n")
+            sys.exit(1)
 
 
 def parse_cli():
@@ -401,32 +426,6 @@ def parse_cli():
                       dest="update_config", help=None)
     (options, args) = parser.parse_args()
 
-    def process_whitelist_options():
-        """Check the whitelist options.  They conflict with everything
-        else."""
-        count = 0
-        for x in (options.whitelist_add, options.whitelist_remove,
-                  options.whitelist_show):
-            if x:
-                count += 1
-        if count == 0:
-            return
-        if count > 1:
-            sys.stderr.write(
-                "error: at most one whitelist option may be specified\n")
-            sys.exit(1)
-
-        for (k, v) in options.__dict__.items():
-            if isinstance(v, types.MethodType) or v is None:
-                continue
-            if k not in ("whitelist", "whitelist_add", "whitelist_remove",
-                         # The following options have defaults and are
-                         # always present.
-                         "history", "status", "format", "line_length"):
-                sys.stderr.write("error: when editing the whitelist, no"
-                                 " other options are allowed\n")
-                sys.exit(1)
-
     if options.whitelist_add:
         whitelist_add(options, args)
         sys.exit(0)
@@ -437,7 +436,7 @@ def parse_cli():
         whitelist_show(options, args)
         sys.exit(0)
 
-    process_whitelist_options()
+    check_whitelist_options(options)
 
     if options.cron:
         options.format = 'report'
@@ -476,7 +475,7 @@ def parse_cli():
     if not options.disable_https_check:
         patch_https_implementation()
 
-    return (options, config, args)
+    return options, config, args
 
 # Vulnerabilities
 
@@ -1071,7 +1070,7 @@ class ReportFormatter(Formatter):
 
     def finish(self):
         if self.options.mailto and not self._status_changed():
-            if options.update_history:
+            if self.options.update_history:
                 self._write_history(self.options.history)
             return
 
@@ -1272,9 +1271,8 @@ this, you may have to upgrade other packages depending on them.
 
         if not self._bug_found:
             if self.options.only_fixed:
-                w(
-                    """No known vulnerabilities for which updates are available were found
-on the system.""")
+                w("No known vulnerabilities for which updates are"
+                  " available were found\non the system.")
             else:
                 w("No known vulnerabilities were found on the system.")
             if self._whitelisted:
@@ -1282,11 +1280,10 @@ on the system.""")
                 w("However, some bugs have been whitelisted.")
         else:
             if self._whitelisted:
-                w(
-                    """Note that some vulnerablities have been whitelisted and are not included
-in this report.""")
+                w("Note that some vulnerablities have been whitelisted"
+                  " and are not included\nin this report.")
 
-        if options.update_history:
+        if self.options.update_history:
             self._write_history(self.options.history)
 
 formatters = {'bugs': BugFormatter,
